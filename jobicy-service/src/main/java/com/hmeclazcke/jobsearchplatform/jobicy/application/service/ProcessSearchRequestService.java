@@ -1,0 +1,70 @@
+package com.hmeclazcke.jobsearchplatform.jobicy.application.service;
+
+import com.hmeclazcke.jobsearchplatform.contracts.JobDto;
+import com.hmeclazcke.jobsearchplatform.contracts.JobProvider;
+import com.hmeclazcke.jobsearchplatform.contracts.ProviderFailedEvent;
+import com.hmeclazcke.jobsearchplatform.contracts.ProviderResultsEvent;
+import com.hmeclazcke.jobsearchplatform.jobicy.application.port.in.ProcessSearchRequestCommand;
+import com.hmeclazcke.jobsearchplatform.jobicy.application.port.in.ProcessSearchRequestUseCase;
+import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.ProviderSearchException;
+import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.PublishProviderFailedPort;
+import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.PublishProviderResultsPort;
+import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.SearchJobsPort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ProcessSearchRequestService implements ProcessSearchRequestUseCase {
+
+    private static final Logger log = LoggerFactory.getLogger(ProcessSearchRequestService.class);
+
+    private final SearchJobsPort searchJobsPort;
+    private final PublishProviderResultsPort publishProviderResultsPort;
+    private final PublishProviderFailedPort publishProviderFailedPort;
+
+    public ProcessSearchRequestService(
+            SearchJobsPort searchJobsPort,
+            PublishProviderResultsPort publishProviderResultsPort,
+            PublishProviderFailedPort publishProviderFailedPort
+    ) {
+        this.searchJobsPort = searchJobsPort;
+        this.publishProviderResultsPort = publishProviderResultsPort;
+        this.publishProviderFailedPort = publishProviderFailedPort;
+    }
+
+    @Override
+    public void process(ProcessSearchRequestCommand command) {
+        try {
+            List<JobDto> jobs = searchJobsPort.searchJobs(command.criteria());
+
+            ProviderResultsEvent event = new ProviderResultsEvent(
+                    command.searchId(),
+                    JobProvider.JOBICY,
+                    jobs
+            );
+
+            publishProviderResultsPort.publish(event);
+
+            log.info("Published Jobicy results: searchId={}, jobsCount={}",
+                    command.searchId(),
+                    jobs.size());
+        } catch (ProviderSearchException exception) {
+            ProviderFailedEvent event = new ProviderFailedEvent(
+                    command.searchId(),
+                    JobProvider.JOBICY,
+                    exception.failureType(),
+                    exception.getMessage()
+            );
+
+            publishProviderFailedPort.publish(event);
+
+            log.warn("Published Jobicy failure: searchId={}, failureType={}, message={}",
+                    command.searchId(),
+                    exception.failureType(),
+                    exception.getMessage());
+        }
+    }
+}

@@ -21,6 +21,7 @@
     <modules>
         <module>job-search-contracts</module>
         <module>search-service</module>
+        <module>jobicy-service</module>
     </modules>
 
     <properties>

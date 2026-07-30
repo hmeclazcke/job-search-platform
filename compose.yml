@@ -32,3 +32,9 @@ services:
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+
+  redis:
+    image: redis:8.0.3
+    container_name: job-search-redis
+    ports:
+      - "6379:6379"
