@@ -1,8 +1,8 @@
 package com.hmeclazcke.jobsearchplatform.search.adapter.in.web;
 
-import com.hmeclazcke.jobsearchplatform.search.application.port.in.StartSearchCommand;
-import com.hmeclazcke.jobsearchplatform.search.application.port.in.StartSearchResult;
-import com.hmeclazcke.jobsearchplatform.search.application.port.in.StartSearchUseCase;
+import com.hmeclazcke.jobsearchplatform.search.application.port.in.command.StartSearchCommand;
+import com.hmeclazcke.jobsearchplatform.search.application.port.in.result.StartSearchResult;
+import com.hmeclazcke.jobsearchplatform.search.application.port.in.usecase.StartSearchUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +21,9 @@ public class SearchController {
     @PostMapping("/search")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public StartSearchResponse startSearch(@RequestBody StartSearchRequest request) {
+
+        // In Clean Architecture, the adapter receives an external request and translates it
+        // into an application command. The use case receives the command, not the HTTP request.
         StartSearchResult result = startSearchUseCase.startSearch(
                 new StartSearchCommand(
                         request.query(),

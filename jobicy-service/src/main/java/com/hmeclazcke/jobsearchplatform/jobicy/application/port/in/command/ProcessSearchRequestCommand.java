@@ -1,4 +1,4 @@
-package com.hmeclazcke.jobsearchplatform.jobicy.application.port.in;
+package com.hmeclazcke.jobsearchplatform.jobicy.application.port.in.command;
 
 import com.hmeclazcke.jobsearchplatform.contracts.SearchCriteria;
 

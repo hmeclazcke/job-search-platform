@@ -4,12 +4,12 @@ import com.hmeclazcke.jobsearchplatform.contracts.JobDto;
 import com.hmeclazcke.jobsearchplatform.contracts.JobProvider;
 import com.hmeclazcke.jobsearchplatform.contracts.ProviderFailedEvent;
 import com.hmeclazcke.jobsearchplatform.contracts.ProviderResultsEvent;
-import com.hmeclazcke.jobsearchplatform.jobicy.application.port.in.ProcessSearchRequestCommand;
-import com.hmeclazcke.jobsearchplatform.jobicy.application.port.in.ProcessSearchRequestUseCase;
-import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.ProviderSearchException;
-import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.PublishProviderFailedPort;
-import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.PublishProviderResultsPort;
-import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.SearchJobsPort;
+import com.hmeclazcke.jobsearchplatform.jobicy.application.port.in.command.ProcessSearchRequestCommand;
+import com.hmeclazcke.jobsearchplatform.jobicy.application.port.in.usecase.ProcessSearchRequestUseCase;
+import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.provider.ProviderSearchException;
+import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.publisher.PublishProviderFailedPort;
+import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.publisher.PublishProviderResultsPort;
+import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.provider.SearchJobsPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -52,6 +52,9 @@ public class ProcessSearchRequestService implements ProcessSearchRequestUseCase 
                     command.searchId(),
                     jobs.size());
         } catch (ProviderSearchException exception) {
+
+            // A provider failure is a valid processing outcome,
+            // so it is published instead of rethrown.
             ProviderFailedEvent event = new ProviderFailedEvent(
                     command.searchId(),
                     JobProvider.JOBICY,

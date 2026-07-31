@@ -2,10 +2,10 @@ package com.hmeclazcke.jobsearchplatform.search.application.service;
 
 import com.hmeclazcke.jobsearchplatform.contracts.SearchCriteria;
 import com.hmeclazcke.jobsearchplatform.contracts.SearchRequestedEvent;
-import com.hmeclazcke.jobsearchplatform.search.application.port.in.StartSearchCommand;
-import com.hmeclazcke.jobsearchplatform.search.application.port.in.StartSearchResult;
-import com.hmeclazcke.jobsearchplatform.search.application.port.in.StartSearchUseCase;
-import com.hmeclazcke.jobsearchplatform.search.application.port.out.PublishSearchRequestedEventPort;
+import com.hmeclazcke.jobsearchplatform.search.application.port.in.command.StartSearchCommand;
+import com.hmeclazcke.jobsearchplatform.search.application.port.in.result.StartSearchResult;
+import com.hmeclazcke.jobsearchplatform.search.application.port.in.usecase.StartSearchUseCase;
+import com.hmeclazcke.jobsearchplatform.search.application.port.out.publisher.PublishSearchRequestedEventPort;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;

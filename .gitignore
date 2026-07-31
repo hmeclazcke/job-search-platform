@@ -12,7 +12,7 @@ dependency-reduced-pom.xml
 *.iws
 *.iml
 *.ipr
-out/
+/out/
 
 # Java
 *.class

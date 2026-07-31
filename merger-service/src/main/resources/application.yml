@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: merger-service
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: merger-service
+      auto-offset-reset: earliest
+
+  data:
+    redis:
+      url: redis://localhost:6379
+
+server:
+  port: 8083
+
+app:
+  kafka:
+    topics:
+      provider-results: provider.results.v1
+      provider-failed: provider.failed.v1
+
+  providers:
+    expected:
+      - JOBICY

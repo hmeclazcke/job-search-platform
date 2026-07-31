@@ -1,8 +1,8 @@
-package com.hmeclazcke.jobsearchplatform.jobicy.adapter.in.kafka;
+package com.hmeclazcke.jobsearchplatform.jobicy.adapter.in.kafka.listener;
 
 import com.hmeclazcke.jobsearchplatform.contracts.SearchRequestedEvent;
-import com.hmeclazcke.jobsearchplatform.jobicy.application.port.in.ProcessSearchRequestCommand;
-import com.hmeclazcke.jobsearchplatform.jobicy.application.port.in.ProcessSearchRequestUseCase;
+import com.hmeclazcke.jobsearchplatform.jobicy.application.port.in.command.ProcessSearchRequestCommand;
+import com.hmeclazcke.jobsearchplatform.jobicy.application.port.in.usecase.ProcessSearchRequestUseCase;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +22,8 @@ public class SearchRequestedKafkaListener {
                 event.criteria()
         );
 
+        // The use case has two valid outcomes: provider results or a provider failure event.
+        // In both cases it returns normally, so Spring Kafka commits the offset for this consumer group.
         processSearchRequestUseCase.process(command);
     }
 }

@@ -22,6 +22,7 @@
         <module>job-search-contracts</module>
         <module>search-service</module>
         <module>jobicy-service</module>
+        <module>merger-service</module>
     </modules>
 
     <properties>
@@ -29,19 +30,5 @@
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-        </dependency>
-    </dependencies>
 
 </project>
