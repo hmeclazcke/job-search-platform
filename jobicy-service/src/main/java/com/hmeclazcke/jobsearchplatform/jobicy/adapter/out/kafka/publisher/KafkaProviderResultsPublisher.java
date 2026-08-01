@@ -1,6 +1,6 @@
 package com.hmeclazcke.jobsearchplatform.jobicy.adapter.out.kafka.publisher;
 
-import com.hmeclazcke.jobsearchplatform.contracts.ProviderResultsEvent;
+import com.hmeclazcke.jobsearchplatform.contracts.search.event.ProviderResultsEvent;
 import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.publisher.PublishProviderResultsPort;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;

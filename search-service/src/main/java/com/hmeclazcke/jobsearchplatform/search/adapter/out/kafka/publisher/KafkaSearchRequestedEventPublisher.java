@@ -1,6 +1,6 @@
 package com.hmeclazcke.jobsearchplatform.search.adapter.out.kafka.publisher;
 
-import com.hmeclazcke.jobsearchplatform.contracts.SearchRequestedEvent;
+import com.hmeclazcke.jobsearchplatform.contracts.search.event.SearchRequestedEvent;
 import com.hmeclazcke.jobsearchplatform.search.application.port.out.publisher.PublishSearchRequestedEventPort;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;

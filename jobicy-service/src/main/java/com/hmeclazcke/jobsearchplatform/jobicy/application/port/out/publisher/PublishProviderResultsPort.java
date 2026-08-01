@@ -1,6 +1,6 @@
 package com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.publisher;
 
-import com.hmeclazcke.jobsearchplatform.contracts.ProviderResultsEvent;
+import com.hmeclazcke.jobsearchplatform.contracts.search.event.ProviderResultsEvent;
 
 @FunctionalInterface
 public interface PublishProviderResultsPort {

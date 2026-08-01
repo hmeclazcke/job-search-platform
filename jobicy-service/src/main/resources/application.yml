@@ -11,7 +11,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: com.hmeclazcke.jobsearchplatform.contracts
-        spring.json.value.default.type: com.hmeclazcke.jobsearchplatform.contracts.SearchRequestedEvent
+        spring.json.value.default.type: com.hmeclazcke.jobsearchplatform.contracts.search.event.SearchRequestedEvent
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

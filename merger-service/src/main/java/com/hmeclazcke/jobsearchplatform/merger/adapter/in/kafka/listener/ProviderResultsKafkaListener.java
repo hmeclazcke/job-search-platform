@@ -1,6 +1,6 @@
 package com.hmeclazcke.jobsearchplatform.merger.adapter.in.kafka.listener;
 
-import com.hmeclazcke.jobsearchplatform.contracts.ProviderResultsEvent;
+import com.hmeclazcke.jobsearchplatform.contracts.search.event.ProviderResultsEvent;
 import com.hmeclazcke.jobsearchplatform.merger.application.port.in.command.MergeProviderResultsCommand;
 import com.hmeclazcke.jobsearchplatform.merger.application.port.in.usecase.MergeProviderResultsUseCase;
 import org.springframework.kafka.annotation.KafkaListener;

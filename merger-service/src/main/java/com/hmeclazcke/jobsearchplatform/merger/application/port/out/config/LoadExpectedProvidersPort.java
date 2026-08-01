@@ -1,6 +1,6 @@
 package com.hmeclazcke.jobsearchplatform.merger.application.port.out.config;
 
-import com.hmeclazcke.jobsearchplatform.contracts.JobProvider;
+import com.hmeclazcke.jobsearchplatform.contracts.provider.JobProvider;
 import java.util.List;
 
 @FunctionalInterface

@@ -1,6 +1,6 @@
 package com.hmeclazcke.jobsearchplatform.merger.application.service;
 
-import com.hmeclazcke.jobsearchplatform.contracts.JobProvider;
+import com.hmeclazcke.jobsearchplatform.contracts.provider.JobProvider;
 import com.hmeclazcke.jobsearchplatform.merger.application.model.aggregation.ProviderFailure;
 import com.hmeclazcke.jobsearchplatform.merger.application.model.aggregation.SearchAggregation;
 import com.hmeclazcke.jobsearchplatform.merger.application.model.status.ProviderStatus;

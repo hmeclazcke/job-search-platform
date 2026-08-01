@@ -1,7 +1,7 @@
 package com.hmeclazcke.jobsearchplatform.merger.adapter.in.kafka.config;
 
-import com.hmeclazcke.jobsearchplatform.contracts.ProviderFailedEvent;
-import com.hmeclazcke.jobsearchplatform.contracts.ProviderResultsEvent;
+import com.hmeclazcke.jobsearchplatform.contracts.search.event.ProviderFailedEvent;
+import com.hmeclazcke.jobsearchplatform.contracts.search.event.ProviderResultsEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;

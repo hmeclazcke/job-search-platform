@@ -1,6 +1,6 @@
 package com.hmeclazcke.jobsearchplatform.jobicy.adapter.in.kafka.listener;
 
-import com.hmeclazcke.jobsearchplatform.contracts.SearchRequestedEvent;
+import com.hmeclazcke.jobsearchplatform.contracts.search.event.SearchRequestedEvent;
 import com.hmeclazcke.jobsearchplatform.jobicy.application.port.in.command.ProcessSearchRequestCommand;
 import com.hmeclazcke.jobsearchplatform.jobicy.application.port.in.usecase.ProcessSearchRequestUseCase;
 import org.springframework.kafka.annotation.KafkaListener;

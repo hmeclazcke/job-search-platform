@@ -1,6 +1,6 @@
 package com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.provider;
 
-import com.hmeclazcke.jobsearchplatform.contracts.ProviderFailureType;
+import com.hmeclazcke.jobsearchplatform.contracts.provider.ProviderFailureType;
 
 public class ProviderSearchException extends RuntimeException {
 

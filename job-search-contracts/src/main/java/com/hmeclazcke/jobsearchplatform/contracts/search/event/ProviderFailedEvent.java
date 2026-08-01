@@ -1,9 +1,10 @@
-package com.hmeclazcke.jobsearchplatform.merger.application.model.aggregation;
+package com.hmeclazcke.jobsearchplatform.contracts.search.event;
 
 import com.hmeclazcke.jobsearchplatform.contracts.provider.JobProvider;
 import com.hmeclazcke.jobsearchplatform.contracts.provider.ProviderFailureType;
 
-public record ProviderFailure(
+public record ProviderFailedEvent(
+        String searchId,
         JobProvider provider,
         ProviderFailureType failureType,
         String message
