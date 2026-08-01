@@ -33,7 +33,7 @@ public class RedisSearchStateRepository implements LoadSearchStatePort, SaveSear
 
     @Override
     public Optional<SearchState> load(String searchId) {
-        // Reads the JSON stored in Redis for this searchId, using the key format "search:{searchId}".
+        // Reads the JSON stored in Redis for this searchId.
         String json = stringRedisTemplate.opsForValue().get(keyFor(searchId));
 
         if (json == null) {
@@ -41,7 +41,7 @@ public class RedisSearchStateRepository implements LoadSearchStatePort, SaveSear
         }
 
         try {
-            // Redis returns the JSON string, which is converted back into the application model.
+            // Redis returns JSON, so it is converted back into SearchState.
             return Optional.of(objectMapper.readValue(json, SearchState.class));
         } catch (JsonProcessingException exception) {
             throw new IllegalStateException("Could not deserialize search state from Redis", exception);
@@ -53,7 +53,7 @@ public class RedisSearchStateRepository implements LoadSearchStatePort, SaveSear
         try {
             // Redis stores strings here, so the SearchState is serialized to JSON before saving.
             String json = objectMapper.writeValueAsString(searchState);
-            // Saves the JSON in Redis using the key format "search:{searchId}".
+            // Saves the JSON in Redis for this searchId.
             stringRedisTemplate.opsForValue().set(keyFor(searchState.searchId()), json);
         } catch (JsonProcessingException exception) {
             throw new IllegalStateException("Could not serialize search state for Redis", exception);

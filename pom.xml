@@ -23,6 +23,7 @@
         <module>search-service</module>
         <module>jobicy-service</module>
         <module>merger-service</module>
+        <module>internal-jobs-service</module>
     </modules>
 
     <properties>

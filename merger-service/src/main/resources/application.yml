@@ -24,3 +24,4 @@ app:
   providers:
     expected:
       - JOBICY
+      - INTERNAL

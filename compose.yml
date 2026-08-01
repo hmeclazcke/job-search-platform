@@ -38,11 +38,39 @@ services:
     container_name: job-search-redis
     ports:
       - "6379:6379"
+    volumes:
+      - redis-data:/data
 
   redis-insight:
     image: redis/redisinsight:2.70
     container_name: job-search-redis-insight
     ports:
       - "5540:5540"
+    volumes:
+      - redis-insight-data:/data
     depends_on:
       - redis
+
+  mongodb:
+    image: mongo:8.0.28
+    container_name: job-search-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+
+  mongo-express:
+    image: mongo-express:1.0.2-20-alpine3.19
+    container_name: job-search-mongo-express
+    ports:
+      - "8086:8081"
+    depends_on:
+      - mongodb
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017
+      ME_CONFIG_BASICAUTH_ENABLED: "false"
+
+volumes:
+  redis-data:
+  redis-insight-data:
+  mongodb-data:
