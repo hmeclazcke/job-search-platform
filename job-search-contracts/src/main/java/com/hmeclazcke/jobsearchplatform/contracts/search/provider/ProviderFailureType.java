@@ -1,4 +1,4 @@
-package com.hmeclazcke.jobsearchplatform.contracts.provider;
+package com.hmeclazcke.jobsearchplatform.contracts.search.provider;
 
 public enum ProviderFailureType {
     TIMEOUT, // The provider did not respond within the expected time.

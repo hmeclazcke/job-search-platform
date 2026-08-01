@@ -5,7 +5,7 @@ import com.hmeclazcke.jobsearchplatform.contracts.search.model.SearchCriteria;
 import com.hmeclazcke.jobsearchplatform.jobicy.adapter.out.http.dto.JobicyResponse;
 import com.hmeclazcke.jobsearchplatform.jobicy.adapter.out.http.mapper.JobicyJobMapper;
 import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.provider.SearchJobsPort;
-import com.hmeclazcke.jobsearchplatform.contracts.provider.ProviderFailureType;
+import com.hmeclazcke.jobsearchplatform.contracts.search.provider.ProviderFailureType;
 import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.provider.ProviderSearchException;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;

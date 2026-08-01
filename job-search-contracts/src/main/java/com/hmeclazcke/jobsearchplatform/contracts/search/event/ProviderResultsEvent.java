@@ -1,7 +1,7 @@
 package com.hmeclazcke.jobsearchplatform.contracts.search.event;
 
 import com.hmeclazcke.jobsearchplatform.contracts.search.model.JobDto;
-import com.hmeclazcke.jobsearchplatform.contracts.provider.JobProvider;
+import com.hmeclazcke.jobsearchplatform.contracts.search.provider.JobProvider;
 
 import java.util.List;
 

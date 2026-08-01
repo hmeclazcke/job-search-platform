@@ -2,7 +2,7 @@ package com.hmeclazcke.jobsearchplatform.merger.adapter.out.redis.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hmeclazcke.jobsearchplatform.merger.application.model.search.SearchState;
+import com.hmeclazcke.jobsearchplatform.contracts.search.state.SearchState;
 import com.hmeclazcke.jobsearchplatform.merger.application.port.out.repository.LoadSearchStatePort;
 import com.hmeclazcke.jobsearchplatform.merger.application.port.out.repository.SaveSearchStatePort;
 import org.springframework.data.redis.core.StringRedisTemplate;

@@ -1,6 +1,6 @@
 package com.hmeclazcke.jobsearchplatform.merger.application.port.out.repository;
 
-import com.hmeclazcke.jobsearchplatform.merger.application.model.search.SearchState;
+import com.hmeclazcke.jobsearchplatform.contracts.search.state.SearchState;
 
 import java.util.Optional;
 

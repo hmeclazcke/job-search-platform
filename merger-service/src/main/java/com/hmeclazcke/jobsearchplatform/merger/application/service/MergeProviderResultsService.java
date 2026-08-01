@@ -1,10 +1,10 @@
 package com.hmeclazcke.jobsearchplatform.merger.application.service;
 
 import com.hmeclazcke.jobsearchplatform.contracts.search.model.JobDto;
-import com.hmeclazcke.jobsearchplatform.contracts.provider.JobProvider;
-import com.hmeclazcke.jobsearchplatform.merger.application.model.search.SearchState;
-import com.hmeclazcke.jobsearchplatform.merger.application.model.status.ProviderStatus;
-import com.hmeclazcke.jobsearchplatform.merger.application.model.status.SearchStatus;
+import com.hmeclazcke.jobsearchplatform.contracts.search.provider.JobProvider;
+import com.hmeclazcke.jobsearchplatform.contracts.search.state.SearchState;
+import com.hmeclazcke.jobsearchplatform.contracts.search.state.ProviderStatus;
+import com.hmeclazcke.jobsearchplatform.contracts.search.state.SearchStatus;
 import com.hmeclazcke.jobsearchplatform.merger.application.port.in.command.MergeProviderResultsCommand;
 import com.hmeclazcke.jobsearchplatform.merger.application.port.in.usecase.MergeProviderResultsUseCase;
 import com.hmeclazcke.jobsearchplatform.merger.application.port.out.repository.SaveSearchStatePort;

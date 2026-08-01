@@ -1,7 +1,7 @@
 package com.hmeclazcke.jobsearchplatform.jobicy.adapter.out.http.mapper;
 
 import com.hmeclazcke.jobsearchplatform.contracts.search.model.JobDto;
-import com.hmeclazcke.jobsearchplatform.contracts.provider.JobProvider;
+import com.hmeclazcke.jobsearchplatform.contracts.search.provider.JobProvider;
 import com.hmeclazcke.jobsearchplatform.jobicy.adapter.out.http.dto.JobicyJobDto;
 import org.springframework.stereotype.Component;
 

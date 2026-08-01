@@ -1,7 +1,7 @@
 package com.hmeclazcke.jobsearchplatform.jobicy.application.service;
 
 import com.hmeclazcke.jobsearchplatform.contracts.search.model.JobDto;
-import com.hmeclazcke.jobsearchplatform.contracts.provider.JobProvider;
+import com.hmeclazcke.jobsearchplatform.contracts.search.provider.JobProvider;
 import com.hmeclazcke.jobsearchplatform.contracts.search.event.ProviderFailedEvent;
 import com.hmeclazcke.jobsearchplatform.contracts.search.event.ProviderResultsEvent;
 import com.hmeclazcke.jobsearchplatform.jobicy.application.port.in.command.ProcessSearchRequestCommand;

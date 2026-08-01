@@ -1,6 +1,6 @@
 package com.hmeclazcke.jobsearchplatform.contracts.search.model;
 
-import com.hmeclazcke.jobsearchplatform.contracts.provider.JobProvider;
+import com.hmeclazcke.jobsearchplatform.contracts.search.provider.JobProvider;
 
 public record JobDto(
         String title,

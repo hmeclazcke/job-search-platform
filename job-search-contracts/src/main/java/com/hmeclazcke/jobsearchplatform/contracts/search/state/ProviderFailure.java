@@ -1,10 +1,9 @@
-package com.hmeclazcke.jobsearchplatform.contracts.search.event;
+package com.hmeclazcke.jobsearchplatform.contracts.search.state;
 
 import com.hmeclazcke.jobsearchplatform.contracts.search.provider.JobProvider;
 import com.hmeclazcke.jobsearchplatform.contracts.search.provider.ProviderFailureType;
 
-public record ProviderFailedEvent(
-        String searchId,
+public record ProviderFailure(
         JobProvider provider,
         ProviderFailureType failureType,
         String message

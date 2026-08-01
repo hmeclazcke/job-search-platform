@@ -1,9 +1,7 @@
-package com.hmeclazcke.jobsearchplatform.merger.application.model.search;
+package com.hmeclazcke.jobsearchplatform.contracts.search.state;
 
-import com.hmeclazcke.jobsearchplatform.contracts.provider.JobProvider;
+import com.hmeclazcke.jobsearchplatform.contracts.search.provider.JobProvider;
 import com.hmeclazcke.jobsearchplatform.contracts.search.model.JobDto;
-import com.hmeclazcke.jobsearchplatform.merger.application.model.status.ProviderStatus;
-import com.hmeclazcke.jobsearchplatform.merger.application.model.status.SearchStatus;
 
 import java.util.List;
 import java.util.Map;

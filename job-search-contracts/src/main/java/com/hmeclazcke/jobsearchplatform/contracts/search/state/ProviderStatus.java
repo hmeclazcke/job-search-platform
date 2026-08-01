@@ -1,4 +1,4 @@
-package com.hmeclazcke.jobsearchplatform.merger.application.model.status;
+package com.hmeclazcke.jobsearchplatform.contracts.search.state;
 
 public enum ProviderStatus {
     PENDING, // Waiting for this provider to answer.
