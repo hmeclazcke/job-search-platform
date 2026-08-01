@@ -3,6 +3,7 @@ package com.hmeclazcke.jobsearchplatform.merger.adapter.out.redis.repository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hmeclazcke.jobsearchplatform.contracts.search.state.SearchState;
+import com.hmeclazcke.jobsearchplatform.contracts.search.state.SearchStateKeys;
 import com.hmeclazcke.jobsearchplatform.merger.application.port.out.repository.LoadSearchStatePort;
 import com.hmeclazcke.jobsearchplatform.merger.application.port.out.repository.SaveSearchStatePort;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -12,16 +13,12 @@ import java.util.Optional;
 
 /**
  * Redis adapter that stores the current search state as JSON.
- *
+ * <p>
  * The application layer uses LoadSearchStatePort and SaveSearchStatePort.
  * This adapter implements those ports with Redis as the external storage detail.
  */
 @Repository
 public class RedisSearchStateRepository implements LoadSearchStatePort, SaveSearchStatePort {
-
-    // Redis is a key/value store, so each search state is stored under a namespaced key:
-    // search:{searchId}
-    private static final String KEY_PREFIX = "search:";
 
     private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
@@ -63,9 +60,7 @@ public class RedisSearchStateRepository implements LoadSearchStatePort, SaveSear
         }
     }
 
-    // Builds the Redis key used to store one SearchState.
-    // Example: searchId "abc-123" becomes "search:abc-123".
     private String keyFor(String searchId) {
-        return KEY_PREFIX + searchId;
+        return SearchStateKeys.bySearchId(searchId);
     }
 }
