@@ -1,9 +1,9 @@
 package com.hmeclazcke.jobsearchplatform.merger.application.service;
 
 import com.hmeclazcke.jobsearchplatform.contracts.provider.JobProvider;
-import com.hmeclazcke.jobsearchplatform.merger.application.model.aggregation.ProviderFailure;
+import com.hmeclazcke.jobsearchplatform.merger.application.model.search.ProviderFailure;
 import com.hmeclazcke.jobsearchplatform.merger.application.model.status.ProviderStatus;
-import com.hmeclazcke.jobsearchplatform.merger.application.model.status.SearchAggregationStatus;
+import com.hmeclazcke.jobsearchplatform.merger.application.model.status.SearchStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class SearchStatusCalculator {
      * 3. If every expected provider answered and at least one failed, the search is COMPLETED_WITH_FAILURES.
      * 4. Otherwise, every expected provider answered successfully, so the search is COMPLETED.
      */
-    public SearchAggregationStatus calculate(
+    public SearchStatus calculate(
             List<JobProvider> expectedProviders,
             Map<JobProvider, ProviderStatus> providers,
             List<ProviderFailure> failures
@@ -30,20 +30,20 @@ public class SearchStatusCalculator {
                 .anyMatch(provider -> providers.get(provider) == ProviderStatus.PENDING);
 
         if (hasPendingProvider) {
-            return SearchAggregationStatus.PENDING;
+            return SearchStatus.PENDING;
         }
 
         boolean allProvidersFailed = expectedProviders.stream()
                 .allMatch(provider -> providers.get(provider) == ProviderStatus.FAILED);
 
         if (allProvidersFailed) {
-            return SearchAggregationStatus.FAILED;
+            return SearchStatus.FAILED;
         }
 
         if (!failures.isEmpty()) {
-            return SearchAggregationStatus.COMPLETED_WITH_FAILURES;
+            return SearchStatus.COMPLETED_WITH_FAILURES;
         }
 
-        return SearchAggregationStatus.COMPLETED;
+        return SearchStatus.COMPLETED;
     }
 }

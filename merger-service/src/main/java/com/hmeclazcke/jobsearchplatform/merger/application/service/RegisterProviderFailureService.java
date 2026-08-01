@@ -1,13 +1,13 @@
 package com.hmeclazcke.jobsearchplatform.merger.application.service;
 
 import com.hmeclazcke.jobsearchplatform.contracts.provider.JobProvider;
-import com.hmeclazcke.jobsearchplatform.merger.application.model.aggregation.ProviderFailure;
-import com.hmeclazcke.jobsearchplatform.merger.application.model.aggregation.SearchAggregation;
+import com.hmeclazcke.jobsearchplatform.merger.application.model.search.ProviderFailure;
+import com.hmeclazcke.jobsearchplatform.merger.application.model.search.SearchState;
 import com.hmeclazcke.jobsearchplatform.merger.application.model.status.ProviderStatus;
-import com.hmeclazcke.jobsearchplatform.merger.application.model.status.SearchAggregationStatus;
+import com.hmeclazcke.jobsearchplatform.merger.application.model.status.SearchStatus;
 import com.hmeclazcke.jobsearchplatform.merger.application.port.in.command.RegisterProviderFailureCommand;
 import com.hmeclazcke.jobsearchplatform.merger.application.port.in.usecase.RegisterProviderFailureUseCase;
-import com.hmeclazcke.jobsearchplatform.merger.application.port.out.repository.SaveSearchAggregationPort;
+import com.hmeclazcke.jobsearchplatform.merger.application.port.out.repository.SaveSearchStatePort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,23 +22,23 @@ public class RegisterProviderFailureService implements RegisterProviderFailureUs
 
     private static final Logger logger = LoggerFactory.getLogger(RegisterProviderFailureService.class);
 
-    private final SaveSearchAggregationPort saveSearchAggregationPort;
+    private final SaveSearchStatePort saveSearchStatePort;
     private final SearchStateProvider searchStateProvider;
     private final SearchStatusCalculator searchStatusCalculator;
 
     public RegisterProviderFailureService(
-            SaveSearchAggregationPort saveSearchAggregationPort,
+            SaveSearchStatePort saveSearchStatePort,
             SearchStateProvider searchStateProvider,
             SearchStatusCalculator searchStatusCalculator
     ) {
-        this.saveSearchAggregationPort = saveSearchAggregationPort;
+        this.saveSearchStatePort = saveSearchStatePort;
         this.searchStateProvider = searchStateProvider;
         this.searchStatusCalculator = searchStatusCalculator;
     }
 
     @Override
     public void register(RegisterProviderFailureCommand command) {
-        SearchAggregation currentSearch = searchStateProvider.getCurrentState(command.searchId());
+        SearchState currentState = searchStateProvider.getCurrentState(command.searchId());
 
         ProviderFailure providerFailure = new ProviderFailure(
                 command.provider(),
@@ -47,32 +47,32 @@ public class RegisterProviderFailureService implements RegisterProviderFailureUs
         );
 
         // Keeps the failures already registered for this search and appends this provider failure.
-        List<ProviderFailure> updatedFailures = new ArrayList<>(currentSearch.failures());
+        List<ProviderFailure> updatedFailures = new ArrayList<>(currentState.failures());
         updatedFailures.add(providerFailure);
 
         // Keeps the provider states already known for this search and marks this provider as failed.
-        Map<JobProvider, ProviderStatus> updatedProviders = new HashMap<>(currentSearch.providers());
+        Map<JobProvider, ProviderStatus> updatedProviders = new HashMap<>(currentState.providers());
         updatedProviders.put(command.provider(), ProviderStatus.FAILED);
 
         // Recalculates the search status after this provider answered with a controlled failure.
-        SearchAggregationStatus updatedStatus = searchStatusCalculator.calculate(
-                currentSearch.expectedProviders(),
+        SearchStatus updatedStatus = searchStatusCalculator.calculate(
+                currentState.expectedProviders(),
                 updatedProviders,
                 updatedFailures
         );
 
-        // SearchAggregation is immutable because it is a record.
+        // SearchState is immutable because it is a record.
         // To update the search state, a new instance is created with the updated failures, providers and status.
-        SearchAggregation updatedSearch = new SearchAggregation(
-                currentSearch.searchId(),
+        SearchState updatedState = new SearchState(
+                currentState.searchId(),
                 updatedStatus,
-                currentSearch.jobs(),
+                currentState.jobs(),
                 Map.copyOf(updatedProviders),
                 List.copyOf(updatedFailures),
-                currentSearch.expectedProviders()
+                currentState.expectedProviders()
         );
 
-        saveSearchAggregationPort.save(updatedSearch);
+        saveSearchStatePort.save(updatedState);
 
         logger.info(
                 "Registered provider failure: searchId={}, provider={}, failureType={}, status={}",

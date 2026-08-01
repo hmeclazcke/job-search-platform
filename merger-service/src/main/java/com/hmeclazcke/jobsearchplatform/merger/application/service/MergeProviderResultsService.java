@@ -2,12 +2,12 @@ package com.hmeclazcke.jobsearchplatform.merger.application.service;
 
 import com.hmeclazcke.jobsearchplatform.contracts.search.model.JobDto;
 import com.hmeclazcke.jobsearchplatform.contracts.provider.JobProvider;
-import com.hmeclazcke.jobsearchplatform.merger.application.model.aggregation.SearchAggregation;
+import com.hmeclazcke.jobsearchplatform.merger.application.model.search.SearchState;
 import com.hmeclazcke.jobsearchplatform.merger.application.model.status.ProviderStatus;
-import com.hmeclazcke.jobsearchplatform.merger.application.model.status.SearchAggregationStatus;
+import com.hmeclazcke.jobsearchplatform.merger.application.model.status.SearchStatus;
 import com.hmeclazcke.jobsearchplatform.merger.application.port.in.command.MergeProviderResultsCommand;
 import com.hmeclazcke.jobsearchplatform.merger.application.port.in.usecase.MergeProviderResultsUseCase;
-import com.hmeclazcke.jobsearchplatform.merger.application.port.out.repository.SaveSearchAggregationPort;
+import com.hmeclazcke.jobsearchplatform.merger.application.port.out.repository.SaveSearchStatePort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,51 +22,51 @@ public class MergeProviderResultsService implements MergeProviderResultsUseCase 
 
     private static final Logger logger = LoggerFactory.getLogger(MergeProviderResultsService.class);
 
-    private final SaveSearchAggregationPort saveSearchAggregationPort;
+    private final SaveSearchStatePort saveSearchStatePort;
     private final SearchStateProvider searchStateProvider;
     private final SearchStatusCalculator searchStatusCalculator;
 
     public MergeProviderResultsService(
-            SaveSearchAggregationPort saveSearchAggregationPort,
+            SaveSearchStatePort saveSearchStatePort,
             SearchStateProvider searchStateProvider,
             SearchStatusCalculator searchStatusCalculator
     ) {
-        this.saveSearchAggregationPort = saveSearchAggregationPort;
+        this.saveSearchStatePort = saveSearchStatePort;
         this.searchStateProvider = searchStateProvider;
         this.searchStatusCalculator = searchStatusCalculator;
     }
 
     @Override
     public void merge(MergeProviderResultsCommand command) {
-        SearchAggregation currentSearch = searchStateProvider.getCurrentState(command.searchId());
+        SearchState currentState = searchStateProvider.getCurrentState(command.searchId());
 
         // Keeps the jobs already collected for this search and appends the jobs received from this provider.
-        List<JobDto> updatedJobs = new ArrayList<>(currentSearch.jobs());
+        List<JobDto> updatedJobs = new ArrayList<>(currentState.jobs());
         updatedJobs.addAll(command.jobs());
 
         // Keeps the provider states already known for this search and marks this provider as completed.
-        Map<JobProvider, ProviderStatus> updatedProviders = new HashMap<>(currentSearch.providers());
+        Map<JobProvider, ProviderStatus> updatedProviders = new HashMap<>(currentState.providers());
         updatedProviders.put(command.provider(), ProviderStatus.COMPLETED);
 
         // Recalculates the search status after this provider answered successfully.
-        SearchAggregationStatus updatedStatus = searchStatusCalculator.calculate(
-                currentSearch.expectedProviders(),
+        SearchStatus updatedStatus = searchStatusCalculator.calculate(
+                currentState.expectedProviders(),
                 updatedProviders,
-                currentSearch.failures()
+                currentState.failures()
         );
 
-        // SearchAggregation is immutable because it is a record.
+        // SearchState is immutable because it is a record.
         // To update the search state, a new instance is created with the updated jobs, providers and status.
-        SearchAggregation updatedSearch = new SearchAggregation(
-                currentSearch.searchId(),
+        SearchState updatedState = new SearchState(
+                currentState.searchId(),
                 updatedStatus,
                 List.copyOf(updatedJobs),
                 Map.copyOf(updatedProviders),
-                currentSearch.failures(),
-                currentSearch.expectedProviders()
+                currentState.failures(),
+                currentState.expectedProviders()
         );
 
-        saveSearchAggregationPort.save(updatedSearch);
+        saveSearchStatePort.save(updatedState);
 
         logger.info(
                 "Merged provider results: searchId={}, provider={}, jobsCount={}, status={}",

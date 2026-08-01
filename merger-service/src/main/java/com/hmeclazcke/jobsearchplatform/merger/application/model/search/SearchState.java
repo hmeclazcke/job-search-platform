@@ -1,18 +1,18 @@
-package com.hmeclazcke.jobsearchplatform.merger.application.model.aggregation;
+package com.hmeclazcke.jobsearchplatform.merger.application.model.search;
 
-import com.hmeclazcke.jobsearchplatform.contracts.search.model.JobDto;
 import com.hmeclazcke.jobsearchplatform.contracts.provider.JobProvider;
+import com.hmeclazcke.jobsearchplatform.contracts.search.model.JobDto;
 import com.hmeclazcke.jobsearchplatform.merger.application.model.status.ProviderStatus;
-import com.hmeclazcke.jobsearchplatform.merger.application.model.status.SearchAggregationStatus;
+import com.hmeclazcke.jobsearchplatform.merger.application.model.status.SearchStatus;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * Represents the current aggregated state of a search after provider responses are processed.
+ * Represents the current state of a search after provider responses are processed.
  *
- * The state can still be PENDING while some providers have not answered yet,
- * or it can be final when every expected provider answered successfully or failed.
+ * The state can remain PENDING while some providers have not answered yet,
+ * or it can become final when every expected provider answered successfully or failed.
  *
  * Example:
  * {
@@ -41,9 +41,9 @@ import java.util.Map;
  *   "expectedProviders": ["JOBICY", "LINKEDIN"]
  * }
  */
-public record SearchAggregation(
+public record SearchState(
         String searchId,
-        SearchAggregationStatus status,
+        SearchStatus status,
         List<JobDto> jobs,
         Map<JobProvider, ProviderStatus> providers,
         List<ProviderFailure> failures,
