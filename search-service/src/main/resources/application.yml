@@ -10,6 +10,10 @@ spring:
       properties:
         spring.json.add.type.headers: false
 
+  data:
+    redis:
+      url: redis://localhost:6379
+
 server:
   port: 8081
 

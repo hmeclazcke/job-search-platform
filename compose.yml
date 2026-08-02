@@ -70,6 +70,74 @@ services:
       ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017
       ME_CONFIG_BASICAUTH_ENABLED: "false"
 
+  search-service:
+    build:
+      context: ./search-service
+      dockerfile: Dockerfile
+    container_name: job-search-search-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - kafka
+      - redis
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_DATA_REDIS_URL: redis://redis:6379
+
+  merger-service:
+    build:
+      context: ./merger-service
+      dockerfile: Dockerfile
+    container_name: job-search-merger-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - kafka
+      - redis
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_DATA_REDIS_URL: redis://redis:6379
+
+  jobicy-service:
+    build:
+      context: ./jobicy-service
+      dockerfile: Dockerfile
+    container_name: job-search-jobicy-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - kafka
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      APP_JOBICY_BASE_URL: https://jobicy.com
+
+  internal-jobs-service:
+    build:
+      context: ./internal-jobs-service
+      dockerfile: Dockerfile
+    container_name: job-search-internal-jobs-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - kafka
+      - mongodb
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/job-search-platform
+
+  linkedin-service:
+    build:
+      context: ./linkedin-service
+      dockerfile: Dockerfile
+    container_name: job-search-linkedin-service
+    ports:
+      - "8087:8087"
+    depends_on:
+      - kafka
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      APP_LINKEDIN_BASE_URL: https://www.linkedin.com
+
 volumes:
   redis-data:
   redis-insight-data:
