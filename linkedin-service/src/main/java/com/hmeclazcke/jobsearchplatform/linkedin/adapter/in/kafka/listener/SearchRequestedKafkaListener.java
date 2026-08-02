@@ -15,10 +15,7 @@ public class SearchRequestedKafkaListener {
         this.processSearchRequestUseCase = processSearchRequestUseCase;
     }
 
-    @KafkaListener(
-            topics = "${app.kafka.topics.search-requested}",
-            groupId = "${spring.kafka.consumer.group-id}"
-    )
+    @KafkaListener(topics = "${app.kafka.topics.search-requested}")
     public void listen(SearchRequestedEvent event) {
 
         ProcessSearchRequestCommand command = new ProcessSearchRequestCommand(

@@ -1,0 +1,438 @@
+# Job Search Platform
+
+Microservices job search platform built with Java 21, Spring Boot, Apache Kafka, Redis, MongoDB and Docker Compose.
+
+The system receives a search request, publishes it to Kafka, lets multiple providers process it asynchronously, merges the provider responses, stores the current search state in Redis, and exposes the result through an HTTP API.
+
+![Execution flow](docs/images/execution-flow-sequence-full.svg)
+
+## Table of Contents
+
+- [SearchState Example](#searchstate-example)
+- [Quick Start](#quick-start)
+- [Tech Stack](#tech-stack)
+- [API](#api)
+- [Architecture](#architecture)
+- [Kafka](#kafka)
+- [Modules](#modules)
+- [Docker Services](#docker-services)
+- [Localhost vs Docker Service Names](#localhost-vs-docker-service-names)
+- [Local Debugging](#local-debugging)
+- [Running Services With Maven](#running-services-with-maven)
+- [Health Checks](#health-checks)
+- [Validated Flows](#validated-flows)
+
+## SearchState Example
+
+`merger-service` stores the current search state in Redis. `search-service` reads that state when the client calls `GET /search/{searchId}`.
+
+Example:
+
+```json
+{
+  "searchId": "ab739095-15b7-4c82-9baa-fdcbb1fdaeae",
+  "status": "COMPLETED",
+  "jobs": [
+    {
+      "title": "Spring Boot Developer",
+      "company": "Northwind Systems",
+      "location": "Remote",
+      "url": "https://internal.example.com/jobs/spring-boot",
+      "source": "INTERNAL"
+    },
+    {
+      "title": "Java Developer",
+      "company": "Virtusa",
+      "location": "Doha, Doha, Qatar",
+      "url": "https://qa.linkedin.com/jobs/view/java-developer-at-virtusa-4435652510",
+      "source": "LINKEDIN"
+    },
+    {
+      "title": "Java Backend Engineer",
+      "company": "Binance",
+      "location": "APAC",
+      "url": "https://jobicy.com/jobs/142198-java-backend-engineer-ai-llm-chatbot-customer-service",
+      "source": "JOBICY"
+    }
+  ],
+  "providers": {
+    "JOBICY": "COMPLETED",
+    "INTERNAL": "COMPLETED",
+    "LINKEDIN": "COMPLETED"
+  },
+  "failures": [],
+  "expectedProviders": [
+    "JOBICY",
+    "INTERNAL",
+    "LINKEDIN"
+  ]
+}
+```
+
+## Quick Start
+
+Prerequisites:
+
+```text
+Java 21
+Docker Desktop
+Maven wrapper included in the repository
+```
+
+Build all modules:
+
+```powershell
+.\mvnw.cmd clean package
+```
+
+Start the complete platform:
+
+```powershell
+docker compose up -d --build
+```
+
+Start a search:
+
+```http
+POST http://localhost:8081/search
+Content-Type: application/json
+
+{
+  "query": "java",
+  "location": "Remote",
+  "remote": true
+}
+```
+
+Read the result:
+
+```http
+GET http://localhost:8081/search/{searchId}
+```
+
+The search flow is asynchronous. A `GET` immediately after `POST` can return 404 until the merger receives the first provider event and creates the Redis state.
+
+## Tech Stack
+
+| Area | Technology |
+| --- | --- |
+| Runtime | Java 21 |
+| Framework | Spring Boot 3.5.16 |
+| Build | Maven multi-module |
+| Messaging | Apache Kafka |
+| State read model | Redis |
+| Internal data source | MongoDB |
+| External HTTP source | Jobicy |
+| External HTML source | LinkedIn guest jobs endpoint parsed with JSoup |
+| Local runtime | Docker Compose |
+| Local UIs | Kafbat / Kafka UI, RedisInsight, Mongo Express |
+
+## API
+
+Start a search:
+
+```http
+POST http://localhost:8081/search
+Content-Type: application/json
+
+{
+  "query": "java",
+  "location": "Remote",
+  "remote": true
+}
+```
+
+Response:
+
+```json
+{
+  "searchId": "..."
+}
+```
+
+HTTP status:
+
+```text
+202 Accepted
+```
+
+Get search result:
+
+```http
+GET http://localhost:8081/search/{searchId}
+```
+
+Successful response:
+
+```json
+{
+  "searchId": "...",
+  "status": "COMPLETED",
+  "jobs": [],
+  "providers": {
+    "JOBICY": "COMPLETED",
+    "INTERNAL": "COMPLETED",
+    "LINKEDIN": "COMPLETED"
+  },
+  "failures": [],
+  "expectedProviders": [
+    "JOBICY",
+    "INTERNAL",
+    "LINKEDIN"
+  ]
+}
+```
+
+If the state does not exist yet:
+
+```json
+{
+  "message": "Search not found",
+  "searchId": "..."
+}
+```
+
+HTTP status:
+
+```text
+404 Not Found
+```
+
+## Architecture
+
+The project follows Clean Architecture / Uncle Bob boundaries.
+
+Main rule:
+
+```text
+adapter in -> application -> port out -> adapter out -> external world
+```
+
+The application layer does not depend on Kafka, Redis, MongoDB, HTTP clients, Docker, YAML, Spring Data repositories or `KafkaTemplate`.
+
+External details live in adapters:
+
+```text
+HTTP controllers
+Kafka listeners
+Kafka publishers
+Redis repositories
+MongoDB repositories
+RestClient clients
+JSoup HTML parser
+Docker Compose
+application.yml
+```
+
+Shared data that crosses service boundaries lives in `job-search-contracts`.
+
+## Kafka
+
+Topics:
+
+```text
+search.requested.v1
+provider.results.v1
+provider.failed.v1
+```
+
+Consumer groups:
+
+```text
+jobicy-service
+internal-jobs-service
+linkedin-service
+merger-service
+```
+
+Events:
+
+```text
+SearchRequestedEvent
+  searchId
+  criteria
+
+ProviderResultsEvent
+  searchId
+  provider
+  jobs
+
+ProviderFailedEvent
+  searchId
+  provider
+  failureType
+  message
+```
+
+All related Kafka messages use `searchId` as key.
+
+## Modules
+
+```text
+job-search-platform
++-- job-search-contracts
++-- search-service
++-- jobicy-service
++-- internal-jobs-service
++-- linkedin-service
++-- merger-service
+```
+
+| Module | Port | Responsibility |
+| --- | --- | --- |
+| `job-search-contracts` | - | Plain Java library with Kafka events, shared DTOs, provider enums, `SearchState` and `SearchStateKeys`. |
+| `search-service` | 8081 | Exposes `POST /search`, publishes search requests to Kafka and reads Redis state for `GET /search/{searchId}`. |
+| `jobicy-service` | 8082 | Consumes search requests, calls Jobicy HTTP API and publishes provider results or failures. |
+| `internal-jobs-service` | 8084 | Consumes search requests, reads active jobs from MongoDB collection `internal_jobs` and publishes provider results or failures. |
+| `linkedin-service` | 8087 | Consumes search requests, calls LinkedIn guest jobs endpoint, parses HTML with JSoup and publishes provider results or failures. |
+| `merger-service` | 8083 | Consumes provider results/failures, calculates `SearchStatus` and stores `SearchState` in Redis. |
+
+## Docker Services
+
+Docker Compose includes infrastructure and all Java microservices.
+
+Infrastructure:
+
+```text
+Kafka
+Kafbat / Kafka UI
+Redis
+RedisInsight
+MongoDB
+Mongo Express
+```
+
+Java services:
+
+```text
+search-service
+jobicy-service
+merger-service
+internal-jobs-service
+linkedin-service
+```
+
+Ports:
+
+| Port | Service |
+| --- | --- |
+| 8081 | search-service |
+| 8082 | jobicy-service |
+| 8083 | merger-service |
+| 8084 | internal-jobs-service |
+| 8085 | Kafbat / Kafka UI |
+| 8086 | Mongo Express |
+| 8087 | linkedin-service |
+| 5540 | RedisInsight |
+| 6379 | Redis |
+| 9092 | Kafka external listener |
+| 27017 | MongoDB |
+
+Useful UIs:
+
+```text
+Kafka UI:      http://localhost:8085
+RedisInsight:  http://localhost:5540
+Mongo Express: http://localhost:8086
+```
+
+## Localhost vs Docker Service Names
+
+From the host machine:
+
+```text
+Kafka  -> localhost:9092
+Redis  -> localhost:6379
+Mongo  -> localhost:27017
+API    -> localhost:8081
+```
+
+From inside Docker Compose:
+
+```text
+Kafka  -> kafka:29092
+Redis  -> redis:6379
+Mongo  -> mongodb:27017
+```
+
+The `application.yml` files keep local defaults for running from IntelliJ or Maven.
+
+Docker Compose overrides those values with environment variables:
+
+```yaml
+SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+SPRING_DATA_REDIS_URL: redis://redis:6379
+SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/job-search-platform
+```
+
+## Local Debugging
+
+Use this mode when debugging the Java services from IntelliJ.
+
+Start only Kafka, Redis, MongoDB and UIs:
+
+```powershell
+docker compose up -d kafka kafka-ui redis redis-insight mongodb mongo-express
+```
+
+Then run the Java services from IntelliJ or Maven.
+
+If all services are already running in Docker and you want to debug locally, stop only the Java containers:
+
+```powershell
+docker compose stop search-service jobicy-service merger-service internal-jobs-service linkedin-service
+```
+
+## Running Services With Maven
+
+Run one service from the project root:
+
+```powershell
+.\mvnw.cmd -f .\search-service\pom.xml spring-boot:run
+.\mvnw.cmd -f .\linkedin-service\pom.xml spring-boot:run
+```
+
+Pattern:
+
+```powershell
+.\mvnw.cmd -f .\<module-name>\pom.xml spring-boot:run
+```
+
+Compile all modules:
+
+```powershell
+.\mvnw.cmd clean package
+```
+
+Compile one module with its dependencies:
+
+```powershell
+.\mvnw.cmd -pl <module-name> -am clean package
+```
+
+## Health Checks
+
+```http
+GET http://localhost:8081/actuator/health
+GET http://localhost:8082/actuator/health
+GET http://localhost:8083/actuator/health
+GET http://localhost:8084/actuator/health
+GET http://localhost:8087/actuator/health
+```
+
+## Validated Flows
+
+Validated flows:
+
+```text
+JOBICY + INTERNAL + LINKEDIN completed
+  -> overall status COMPLETED
+
+INTERNAL failed while JOBICY and LINKEDIN completed
+  -> overall status COMPLETED_WITH_FAILURES
+
+LINKEDIN failed while JOBICY and INTERNAL completed
+  -> overall status COMPLETED_WITH_FAILURES
+```
+
+The full Docker Compose flow has been tested with all microservices running in Docker.
