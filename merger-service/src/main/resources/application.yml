@@ -25,3 +25,4 @@ app:
     expected:
       - JOBICY
       - INTERNAL
+      - LINKEDIN

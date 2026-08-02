@@ -24,6 +24,7 @@
         <module>jobicy-service</module>
         <module>merger-service</module>
         <module>internal-jobs-service</module>
+        <module>linkedin-service</module>
     </modules>
 
     <properties>
