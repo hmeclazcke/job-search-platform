@@ -1,4 +1,4 @@
-<svg width="2600" height="1740" viewBox="0 0 2600 1740" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<svg width="2600" height="2650" viewBox="0 0 2600 2650" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Execution Flow - Job Search Platform</title>
   <desc id="desc">Sequence-style execution flow for the job search platform, showing HTTP, Kafka topics, provider services, merger-service and Redis state.</desc>
 
@@ -72,12 +72,12 @@
     .rule { stroke: #e2e8f0; stroke-width: 1.2; }
   </style>
 
-  <rect class="bg" width="2600" height="1740"/>
+  <rect class="bg" width="2600" height="2650"/>
 
   <text class="title" x="1300" y="58" text-anchor="middle">Execution Flow - Job Search Platform</text>
-  <text class="subtitle" x="1300" y="92" text-anchor="middle">HTTP starts the search, Kafka fans it out to providers, merger-service materializes Redis state, and HTTP reads the result</text>
+  <text class="subtitle" x="1300" y="92" text-anchor="middle">HTTP starts the search, Kafka fans it out to providers, provider events update Redis as they arrive, and HTTP reads the result</text>
 
-  <rect class="panel" x="52" y="124" width="2496" height="1520" rx="18"/>
+  <rect class="panel" x="52" y="124" width="2496" height="2380" rx="18"/>
 
   <!-- Lane headers -->
   <g transform="translate(80 156)">
@@ -144,15 +144,15 @@
   </g>
 
   <!-- Lifelines -->
-  <line class="lifeline" x1="185" y1="250" x2="185" y2="1580"/>
-  <line class="lifeline" x1="495" y1="250" x2="495" y2="1580"/>
-  <line class="lifeline" x1="805" y1="250" x2="805" y2="1580"/>
-  <line class="lifeline" x1="1100" y1="250" x2="1100" y2="1580"/>
-  <line class="lifeline" x1="1405" y1="250" x2="1405" y2="1580"/>
-  <line class="lifeline" x1="1705" y1="250" x2="1705" y2="1580"/>
-  <line class="lifeline" x1="2010" y1="250" x2="2010" y2="1580"/>
-  <line class="lifeline" x1="2305" y1="250" x2="2305" y2="1580"/>
-  <line class="lifeline" x1="2500" y1="250" x2="2500" y2="1580"/>
+  <line class="lifeline" x1="185" y1="250" x2="185" y2="2450"/>
+  <line class="lifeline" x1="495" y1="250" x2="495" y2="2450"/>
+  <line class="lifeline" x1="805" y1="250" x2="805" y2="2450"/>
+  <line class="lifeline" x1="1100" y1="250" x2="1100" y2="2450"/>
+  <line class="lifeline" x1="1405" y1="250" x2="1405" y2="2450"/>
+  <line class="lifeline" x1="1705" y1="250" x2="1705" y2="2450"/>
+  <line class="lifeline" x1="2010" y1="250" x2="2010" y2="2450"/>
+  <line class="lifeline" x1="2305" y1="250" x2="2305" y2="2450"/>
+  <line class="lifeline" x1="2500" y1="250" x2="2500" y2="2450"/>
 
   <!-- Section guide -->
   <text class="section-title" x="88" y="286">Start search</text>
@@ -186,56 +186,115 @@
   <rect class="label-bg-purple" x="1142" y="705" width="225" height="25" rx="12"/>
   <text class="message-text" x="1255" y="723" text-anchor="middle">group: linkedin</text>
 
-  <text class="section-title" x="88" y="815">Providers publish results or failures</text>
+  <text class="section-title" x="88" y="815">Provider events are processed as they arrive</text>
   <line class="rule" x1="88" y1="833" x2="2512" y2="833"/>
 
   <!-- 6 -->
   <line class="arrow-purple" x1="1100" y1="880" x2="2010" y2="880"/>
-  <rect class="label-bg-purple" x="1425" y="850" width="260" height="25" rx="12"/>
-  <text class="message-text" x="1555" y="868" text-anchor="middle">results or failure event</text>
+  <rect class="label-bg-purple" x="1418" y="850" width="274" height="25" rx="12"/>
+  <text class="message-text" x="1555" y="868" text-anchor="middle">JOBICY result or failure event</text>
 
   <!-- 7 -->
-  <line class="arrow-purple" x1="1405" y1="960" x2="2010" y2="960"/>
-  <rect class="label-bg-purple" x="1570" y="930" width="275" height="25" rx="12"/>
-  <text class="message-text" x="1708" y="948" text-anchor="middle">results or failure event</text>
+  <line class="arrow-purple" x1="2010" y1="950" x2="2305" y2="950"/>
+  <rect class="label-bg-purple" x="2055" y="920" width="205" height="25" rx="12"/>
+  <text class="message-text" x="2158" y="938" text-anchor="middle">consume JOBICY event</text>
 
   <!-- 8 -->
-  <line class="arrow-purple" x1="1705" y1="1040" x2="2010" y2="1040"/>
-  <rect class="label-bg-purple" x="1768" y="1010" width="180" height="25" rx="12"/>
-  <text class="message-text" x="1858" y="1028" text-anchor="middle">results or failure</text>
-
-  <text class="section-title" x="88" y="1120">Merge results and update Redis state</text>
-  <line class="rule" x1="88" y1="1138" x2="2512" y2="1138"/>
+  <line class="arrow-green" x1="2305" y1="1015" x2="2500" y2="1015"/>
+  <rect class="label-bg-green" x="2324" y="985" width="158" height="25" rx="12"/>
+  <text class="message-text" x="2403" y="1003" text-anchor="middle">load current state</text>
 
   <!-- 9 -->
-  <line class="arrow-purple" x1="2010" y1="1185" x2="2305" y2="1185"/>
-  <rect class="label-bg-purple" x="2054" y="1155" width="210" height="25" rx="12"/>
-  <text class="message-text" x="2159" y="1173" text-anchor="middle">consume provider events</text>
+  <line class="arrow-return" x1="2500" y1="1075" x2="2305" y2="1075"/>
+  <rect class="label-bg-slate" x="2315" y="1045" width="175" height="25" rx="12"/>
+  <text class="message-text" x="2402" y="1063" text-anchor="middle">current state or empty</text>
+
+  <rect class="label-bg-slate" x="2172" y="1125" width="266" height="25" rx="12"/>
+  <text class="message-text" x="2305" y="1143" text-anchor="middle">merge jobs + calculate status</text>
 
   <!-- 10 -->
-  <line class="arrow-green" x1="2305" y1="1265" x2="2500" y2="1265"/>
-  <rect class="label-bg-green" x="2340" y="1235" width="125" height="25" rx="12"/>
-  <text class="message-text" x="2402" y="1253" text-anchor="middle">save state</text>
+  <line class="arrow-green" x1="2305" y1="1185" x2="2500" y2="1185"/>
+  <rect class="label-bg-green" x="2322" y="1155" width="160" height="25" rx="12"/>
+  <text class="message-text" x="2402" y="1173" text-anchor="middle">save updated state</text>
 
   <!-- 11 -->
-  <line class="arrow-blue" x1="185" y1="1355" x2="495" y2="1355"/>
-  <rect class="label-bg-blue" x="220" y="1325" width="240" height="25" rx="12"/>
-  <text class="message-text" x="340" y="1343" text-anchor="middle">GET /search/{searchId}</text>
+  <line class="arrow-purple" x1="1405" y1="1290" x2="2010" y2="1290"/>
+  <rect class="label-bg-purple" x="1562" y="1260" width="292" height="25" rx="12"/>
+  <text class="message-text" x="1708" y="1278" text-anchor="middle">INTERNAL result or failure event</text>
 
   <!-- 12 -->
-  <line class="arrow-green" x1="495" y1="1435" x2="2500" y2="1435"/>
-  <rect class="label-bg-green" x="1315" y="1405" width="365" height="25" rx="12"/>
-  <text class="message-text" x="1498" y="1423" text-anchor="middle">load SearchState from search:{searchId}</text>
+  <line class="arrow-purple" x1="2010" y1="1360" x2="2305" y2="1360"/>
+  <rect class="label-bg-purple" x="2048" y="1330" width="220" height="25" rx="12"/>
+  <text class="message-text" x="2158" y="1348" text-anchor="middle">consume INTERNAL event</text>
 
   <!-- 13 -->
-  <line class="arrow-return" x1="2500" y1="1500" x2="495" y2="1500"/>
-  <rect class="label-bg-slate" x="1350" y="1470" width="295" height="25" rx="12"/>
-  <text class="message-text" x="1498" y="1488" text-anchor="middle">SearchState JSON or empty</text>
+  <line class="arrow-green" x1="2305" y1="1425" x2="2500" y2="1425"/>
+  <rect class="label-bg-green" x="2324" y="1395" width="158" height="25" rx="12"/>
+  <text class="message-text" x="2403" y="1413" text-anchor="middle">load current state</text>
 
   <!-- 14 -->
-  <path class="arrow-return" d="M495 1535 H185"/>
-  <rect class="label-bg-slate" x="238" y="1505" width="205" height="25" rx="12"/>
-  <text class="message-text" x="340" y="1523" text-anchor="middle">200 OK or 404</text>
+  <line class="arrow-return" x1="2500" y1="1485" x2="2305" y2="1485"/>
+  <rect class="label-bg-slate" x="2315" y="1455" width="175" height="25" rx="12"/>
+  <text class="message-text" x="2402" y="1473" text-anchor="middle">current state</text>
+
+  <rect class="label-bg-slate" x="2172" y="1535" width="266" height="25" rx="12"/>
+  <text class="message-text" x="2305" y="1553" text-anchor="middle">merge jobs + calculate status</text>
+
+  <!-- 15 -->
+  <line class="arrow-green" x1="2305" y1="1595" x2="2500" y2="1595"/>
+  <rect class="label-bg-green" x="2322" y="1565" width="160" height="25" rx="12"/>
+  <text class="message-text" x="2402" y="1583" text-anchor="middle">save updated state</text>
+
+  <!-- 16 -->
+  <line class="arrow-purple" x1="1705" y1="1700" x2="2010" y2="1700"/>
+  <rect class="label-bg-purple" x="1748" y="1670" width="220" height="25" rx="12"/>
+  <text class="message-text" x="1858" y="1688" text-anchor="middle">LINKEDIN result/failure</text>
+
+  <!-- 17 -->
+  <line class="arrow-purple" x1="2010" y1="1770" x2="2305" y2="1770"/>
+  <rect class="label-bg-purple" x="2048" y="1740" width="220" height="25" rx="12"/>
+  <text class="message-text" x="2158" y="1758" text-anchor="middle">consume LINKEDIN event</text>
+
+  <!-- 18 -->
+  <line class="arrow-green" x1="2305" y1="1835" x2="2500" y2="1835"/>
+  <rect class="label-bg-green" x="2324" y="1805" width="158" height="25" rx="12"/>
+  <text class="message-text" x="2403" y="1823" text-anchor="middle">load current state</text>
+
+  <!-- 19 -->
+  <line class="arrow-return" x1="2500" y1="1895" x2="2305" y2="1895"/>
+  <rect class="label-bg-slate" x="2315" y="1865" width="175" height="25" rx="12"/>
+  <text class="message-text" x="2402" y="1883" text-anchor="middle">current state</text>
+
+  <rect class="label-bg-slate" x="2172" y="1945" width="266" height="25" rx="12"/>
+  <text class="message-text" x="2305" y="1963" text-anchor="middle">merge jobs + calculate status</text>
+
+  <!-- 20 -->
+  <line class="arrow-green" x1="2305" y1="2005" x2="2500" y2="2005"/>
+  <rect class="label-bg-green" x="2322" y="1975" width="160" height="25" rx="12"/>
+  <text class="message-text" x="2402" y="1993" text-anchor="middle">save updated state</text>
+
+  <text class="section-title" x="88" y="2130">Read materialized search state</text>
+  <line class="rule" x1="88" y1="2148" x2="2512" y2="2148"/>
+
+  <!-- 21 -->
+  <line class="arrow-blue" x1="185" y1="2200" x2="495" y2="2200"/>
+  <rect class="label-bg-blue" x="220" y="2170" width="240" height="25" rx="12"/>
+  <text class="message-text" x="340" y="2188" text-anchor="middle">GET /search/{searchId}</text>
+
+  <!-- 22 -->
+  <line class="arrow-green" x1="495" y1="2275" x2="2500" y2="2275"/>
+  <rect class="label-bg-green" x="1315" y="2245" width="365" height="25" rx="12"/>
+  <text class="message-text" x="1498" y="2263" text-anchor="middle">load SearchState from search:{searchId}</text>
+
+  <!-- 23 -->
+  <line class="arrow-return" x1="2500" y1="2345" x2="495" y2="2345"/>
+  <rect class="label-bg-slate" x="1350" y="2315" width="295" height="25" rx="12"/>
+  <text class="message-text" x="1498" y="2333" text-anchor="middle">SearchState JSON or empty</text>
+
+  <!-- 24 -->
+  <path class="arrow-return" d="M495 2410 H185"/>
+  <rect class="label-bg-slate" x="238" y="2380" width="205" height="25" rx="12"/>
+  <text class="message-text" x="340" y="2398" text-anchor="middle">200 OK or 404</text>
 
   <!-- Notes -->
   <g transform="translate(1040 254)">
@@ -255,6 +314,6 @@
     <text class="note-line" x="198" y="133" text-anchor="middle">Any pending: PENDING</text>
   </g>
 
-  <text class="footer" x="88" y="1690">Clean Architecture: adapter in - application - port out - adapter out</text>
-  <text class="footer" x="2512" y="1690" text-anchor="end">Java 21 - Spring Boot - Apache Kafka - Redis - MongoDB - Docker Compose</text>
+  <text class="footer" x="88" y="2595">Clean Architecture: adapter in - application - port out - adapter out</text>
+  <text class="footer" x="2512" y="2595" text-anchor="end">Java 21 - Spring Boot - Apache Kafka - Redis - MongoDB - Docker Compose</text>
 </svg>

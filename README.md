@@ -202,6 +202,8 @@ HTTP status:
 
 The project follows Clean Architecture / Uncle Bob boundaries.
 
+![Architecture boundaries](docs/images/architecture-boundaries-hexagonal.svg)
+
 Main rule:
 
 ```text

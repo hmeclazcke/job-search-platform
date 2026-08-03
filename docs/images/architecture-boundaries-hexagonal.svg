@@ -1,0 +1,283 @@
+<svg width="2200" height="1280" viewBox="0 0 2200 1280" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Architecture Boundaries - Job Search Platform</title>
+  <desc id="desc">Hexagonal architecture diagram showing external systems, adapters, application ports, application services, and Redis as both read-model input and external state store.</desc>
+
+  <defs>
+    <marker id="arrow-blue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M1,1 L10,6 L1,11 Z" fill="#2563eb"/>
+    </marker>
+
+    <marker id="arrow-green" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M1,1 L10,6 L1,11 Z" fill="#059669"/>
+    </marker>
+
+    <marker id="arrow-slate" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M1,1 L10,6 L1,11 Z" fill="#475569"/>
+    </marker>
+
+    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%">
+      <feDropShadow dx="0" dy="7" stdDeviation="10" flood-color="#0f172a" flood-opacity="0.10"/>
+    </filter>
+
+    <linearGradient id="page-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#eef2f7"/>
+    </linearGradient>
+
+    <linearGradient id="app-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f8fafc"/>
+    </linearGradient>
+
+    <linearGradient id="adapter-boundary-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eff6ff" stop-opacity="0.52"/>
+      <stop offset="100%" stop-color="#ecfdf5" stop-opacity="0.46"/>
+    </linearGradient>
+
+    <linearGradient id="port-boundary-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5f3ff" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#faf5ff" stop-opacity="0.62"/>
+    </linearGradient>
+  </defs>
+
+  <style>
+    .bg { fill: url(#page-bg); }
+    .title { font: 800 40px "Segoe UI", Arial, sans-serif; fill: #0f172a; }
+    .subtitle { font: 400 18px "Segoe UI", Arial, sans-serif; fill: #475569; }
+    .panel { fill: #ffffff; stroke: #dbe3ef; stroke-width: 1.4; filter: url(#shadow); }
+    .adapter-boundary { fill: url(#adapter-boundary-bg); stroke: #38bdf8; stroke-width: 3; filter: url(#shadow); }
+    .port-boundary { fill: url(#port-boundary-bg); stroke: #8b5cf6; stroke-width: 3; filter: url(#shadow); }
+    .app-hex { fill: url(#app-bg); stroke: #0f766e; stroke-width: 3; filter: url(#shadow); }
+    .boundary-label { font: 800 14px "Segoe UI", Arial, sans-serif; fill: #334155; }
+
+    .box { fill: #ffffff; stroke-width: 2; filter: url(#shadow); }
+    .external { stroke: #64748b; }
+    .adapter-in { stroke: #2563eb; }
+    .adapter-out { stroke: #059669; }
+    .port { stroke: #7c3aed; }
+    .note { stroke: #cbd5e1; }
+
+    .stripe-external { fill: #e2e8f0; }
+    .stripe-in { fill: #dbeafe; }
+    .stripe-out { fill: #dcfce7; }
+    .stripe-port { fill: #ede9fe; }
+    .stripe-note { fill: #f8fafc; }
+
+    .box-title { font: 800 17px "Segoe UI", Arial, sans-serif; fill: #0f172a; }
+    .box-line { font: 400 13.5px "Segoe UI", Arial, sans-serif; fill: #334155; }
+    .small { font: 400 12.5px "Segoe UI", Arial, sans-serif; fill: #64748b; }
+    .section { font: 800 15px "Segoe UI", Arial, sans-serif; fill: #334155; }
+    .app-title { font: 800 27px "Segoe UI", Arial, sans-serif; fill: #0f172a; }
+    .app-subtitle { font: 400 15px "Segoe UI", Arial, sans-serif; fill: #475569; }
+    .app-line { font: 700 14px "Segoe UI", Arial, sans-serif; fill: #334155; }
+    .rule { stroke: #e2e8f0; stroke-width: 1.2; }
+    .arrow-in { stroke: #2563eb; stroke-width: 2.8; fill: none; marker-end: url(#arrow-blue); }
+    .arrow-out { stroke: #059669; stroke-width: 2.8; fill: none; marker-end: url(#arrow-green); }
+    .legend-text { font: 700 12.5px "Segoe UI", Arial, sans-serif; fill: #334155; }
+  </style>
+
+  <rect class="bg" width="2200" height="1280"/>
+
+  <text class="title" x="1100" y="58" text-anchor="middle">Architecture Boundaries - Job Search Platform</text>
+  <text class="subtitle" x="1100" y="92" text-anchor="middle">Clean Architecture / Hexagonal Architecture: use cases own the ports, adapters translate HTTP, Kafka, Redis, MongoDB and external APIs</text>
+
+  <rect class="panel" x="52" y="126" width="2096" height="1045" rx="18"/>
+
+  <!-- Column labels -->
+  <text class="section" x="215" y="176" text-anchor="middle">External inputs / read models</text>
+  <text class="section" x="470" y="176" text-anchor="middle">Inbound adapters</text>
+  <text class="section" x="840" y="176" text-anchor="middle">Inbound ports</text>
+  <text class="section" x="1100" y="176" text-anchor="middle">Application core</text>
+  <text class="section" x="1360" y="176" text-anchor="middle">Outbound ports</text>
+  <text class="section" x="1710" y="176" text-anchor="middle">Outbound adapters</text>
+  <text class="section" x="1975" y="176" text-anchor="middle">External systems</text>
+  <line class="rule" x1="86" y1="195" x2="2114" y2="195"/>
+
+  <!-- Hexagonal boundaries -->
+  <polygon class="adapter-boundary" points="360,230 1865,230 1885,640 1865,1050 360,1050 340,640"/>
+  <polygon class="port-boundary" points="650,310 1550,310 1695,640 1550,970 650,970 505,640"/>
+  <polygon class="app-hex" points="850,365 1350,365 1460,640 1350,915 850,915 740,640"/>
+
+  <text class="boundary-label" x="1100" y="246" text-anchor="middle">Adapters boundary</text>
+  <text class="boundary-label" x="1100" y="326" text-anchor="middle">Ports boundary</text>
+
+  <!-- Left external boxes -->
+  <g transform="translate(100 270)">
+    <rect class="box external" width="230" height="105" rx="10"/>
+    <rect class="stripe-external" width="230" height="11" rx="5"/>
+    <text class="box-title" x="115" y="40" text-anchor="middle">HTTP client</text>
+    <text class="box-line" x="115" y="65" text-anchor="middle">POST /search</text>
+    <text class="box-line" x="115" y="87" text-anchor="middle">GET /search/{searchId}</text>
+  </g>
+
+  <g transform="translate(100 500)">
+    <rect class="box external" width="230" height="112" rx="10"/>
+    <rect class="stripe-external" width="230" height="11" rx="5"/>
+    <text class="box-title" x="115" y="40" text-anchor="middle">Kafka topics</text>
+    <text class="box-line" x="115" y="65" text-anchor="middle">search.requested.v1</text>
+    <text class="box-line" x="115" y="88" text-anchor="middle">provider event topics</text>
+  </g>
+
+  <g transform="translate(100 720)">
+    <rect class="box external" width="230" height="112" rx="10"/>
+    <rect class="stripe-external" width="230" height="11" rx="5"/>
+    <text class="box-title" x="115" y="40" text-anchor="middle">Redis read model</text>
+    <text class="box-line" x="115" y="65" text-anchor="middle">search:{searchId}</text>
+    <text class="small" x="115" y="88" text-anchor="middle">materialized SearchState</text>
+  </g>
+
+  <!-- Inbound adapters -->
+  <g transform="translate(370 268)">
+    <rect class="box adapter-in" width="230" height="108" rx="10"/>
+    <rect class="stripe-in" width="230" height="11" rx="5"/>
+    <text class="box-title" x="115" y="40" text-anchor="middle">SearchController</text>
+    <text class="box-line" x="115" y="66" text-anchor="middle">HTTP adapter</text>
+    <text class="small" x="115" y="88" text-anchor="middle">web request to use case</text>
+  </g>
+
+  <g transform="translate(370 496)">
+    <rect class="box adapter-in" width="230" height="122" rx="10"/>
+    <rect class="stripe-in" width="230" height="11" rx="5"/>
+    <text class="box-title" x="115" y="40" text-anchor="middle">Kafka listeners</text>
+    <text class="box-line" x="115" y="66" text-anchor="middle">SearchRequested</text>
+    <text class="box-line" x="115" y="88" text-anchor="middle">ProviderResults</text>
+    <text class="box-line" x="115" y="110" text-anchor="middle">ProviderFailed</text>
+  </g>
+
+  <g transform="translate(370 718)">
+    <rect class="box adapter-in" width="230" height="112" rx="10"/>
+    <rect class="stripe-in" width="230" height="11" rx="5"/>
+    <text class="box-title" x="115" y="40" text-anchor="middle">Redis read adapter</text>
+    <text class="box-line" x="115" y="66" text-anchor="middle">RedisSearchStateRepository</text>
+    <text class="small" x="115" y="88" text-anchor="middle">GET reads SearchState</text>
+  </g>
+
+  <text class="app-title" x="1100" y="360" text-anchor="middle">Application Core</text>
+  <text class="app-subtitle" x="1100" y="392" text-anchor="middle">Use cases, services, commands and queries</text>
+
+  <text class="boundary-label" x="1100" y="505" text-anchor="middle">Application services</text>
+  <text class="app-line" x="1100" y="535" text-anchor="middle">StartSearchService</text>
+  <text class="app-line" x="1100" y="565" text-anchor="middle">ProcessSearchRequestService</text>
+  <text class="app-line" x="1100" y="595" text-anchor="middle">MergeProviderResultsService</text>
+  <text class="app-line" x="1100" y="625" text-anchor="middle">RegisterProviderFailureService</text>
+  <text class="app-line" x="1100" y="655" text-anchor="middle">SearchStatusCalculator</text>
+
+  <g transform="translate(902 730)">
+    <rect class="box note" width="396" height="105" rx="11"/>
+    <rect class="stripe-note" width="396" height="11" rx="5"/>
+    <text class="box-title" x="198" y="38" text-anchor="middle">What is isolated here?</text>
+    <text class="box-line" x="198" y="64" text-anchor="middle">No KafkaTemplate, Redis clients, Mongo clients,</text>
+    <text class="box-line" x="198" y="86" text-anchor="middle">HTTP clients, JSoup, YAML, Docker or Spring Data.</text>
+  </g>
+
+  <!-- Ports attached to the application boundary -->
+  <g transform="translate(665 420)">
+    <rect class="box port" width="285" height="180" rx="12"/>
+    <rect class="stripe-port" width="285" height="11" rx="5"/>
+    <text class="box-title" x="142" y="38" text-anchor="middle">Inbound ports</text>
+    <text class="box-line" x="142" y="66" text-anchor="middle">StartSearchUseCase</text>
+    <text class="box-line" x="142" y="90" text-anchor="middle">GetSearchResultUseCase</text>
+    <text class="box-line" x="142" y="114" text-anchor="middle">ProcessSearchRequestUseCase</text>
+    <text class="box-line" x="142" y="138" text-anchor="middle">MergeProviderResultsUseCase</text>
+    <text class="box-line" x="142" y="162" text-anchor="middle">RegisterProviderFailureUseCase</text>
+  </g>
+
+  <g transform="translate(1250 418)">
+    <rect class="box port" width="300" height="210" rx="12"/>
+    <rect class="stripe-port" width="300" height="11" rx="5"/>
+    <text class="box-title" x="150" y="38" text-anchor="middle">Outbound ports</text>
+    <text class="box-line" x="150" y="66" text-anchor="middle">SearchJobsPort</text>
+    <text class="box-line" x="150" y="90" text-anchor="middle">SearchInternalJobsPort</text>
+    <text class="box-line" x="150" y="114" text-anchor="middle">LoadSearchStatePort</text>
+    <text class="box-line" x="150" y="138" text-anchor="middle">SaveSearchStatePort</text>
+    <text class="box-line" x="150" y="162" text-anchor="middle">PublishProviderResultsPort</text>
+    <text class="box-line" x="150" y="186" text-anchor="middle">PublishProviderFailedPort</text>
+  </g>
+
+  <!-- Outbound adapters -->
+  <g transform="translate(1610 270)">
+    <rect class="box adapter-out" width="245" height="106" rx="10"/>
+    <rect class="stripe-out" width="245" height="11" rx="5"/>
+    <text class="box-title" x="122" y="40" text-anchor="middle">Kafka publishers</text>
+    <text class="box-line" x="122" y="66" text-anchor="middle">KafkaTemplate</text>
+    <text class="small" x="122" y="88" text-anchor="middle">publishes provider events</text>
+  </g>
+
+  <g transform="translate(1610 480)">
+    <rect class="box adapter-out" width="245" height="116" rx="10"/>
+    <rect class="stripe-out" width="245" height="11" rx="5"/>
+    <text class="box-title" x="122" y="40" text-anchor="middle">Redis state adapters</text>
+    <text class="box-line" x="122" y="66" text-anchor="middle">load and save SearchState</text>
+    <text class="small" x="122" y="88" text-anchor="middle">Redis client stays outside</text>
+  </g>
+
+  <g transform="translate(1610 700)">
+    <rect class="box adapter-out" width="245" height="128" rx="10"/>
+    <rect class="stripe-out" width="245" height="11" rx="5"/>
+    <text class="box-title" x="122" y="40" text-anchor="middle">Provider adapters</text>
+    <text class="box-line" x="122" y="66" text-anchor="middle">JobicyClient</text>
+    <text class="box-line" x="122" y="88" text-anchor="middle">LinkedinClient</text>
+    <text class="box-line" x="122" y="110" text-anchor="middle">MongoInternalJobsRepository</text>
+  </g>
+
+  <!-- Right external systems -->
+  <g transform="translate(1910 268)">
+    <rect class="box external" width="215" height="110" rx="10"/>
+    <rect class="stripe-external" width="215" height="11" rx="5"/>
+    <text class="box-title" x="107" y="40" text-anchor="middle">Kafka</text>
+    <text class="box-line" x="107" y="66" text-anchor="middle">provider.results.v1</text>
+    <text class="box-line" x="107" y="88" text-anchor="middle">provider.failed.v1</text>
+  </g>
+
+  <g transform="translate(1910 480)">
+    <rect class="box external" width="215" height="112" rx="10"/>
+    <rect class="stripe-external" width="215" height="11" rx="5"/>
+    <text class="box-title" x="107" y="40" text-anchor="middle">Redis</text>
+    <text class="box-line" x="107" y="66" text-anchor="middle">search:{searchId}</text>
+    <text class="small" x="107" y="88" text-anchor="middle">SearchState JSON</text>
+  </g>
+
+  <g transform="translate(1910 700)">
+    <rect class="box external" width="215" height="128" rx="10"/>
+    <rect class="stripe-external" width="215" height="11" rx="5"/>
+    <text class="box-title" x="107" y="40" text-anchor="middle">External data</text>
+    <text class="box-line" x="107" y="66" text-anchor="middle">MongoDB</text>
+    <text class="box-line" x="107" y="88" text-anchor="middle">Jobicy API</text>
+    <text class="box-line" x="107" y="110" text-anchor="middle">LinkedIn HTML</text>
+  </g>
+
+  <!-- Runtime call arrows -->
+  <path class="arrow-in" d="M330 322 H370"/>
+  <path class="arrow-in" d="M600 322 H635 V470 H665"/>
+  <path class="arrow-in" d="M330 556 H370"/>
+  <path class="arrow-in" d="M600 556 H665"/>
+  <path class="arrow-in" d="M330 776 H370"/>
+  <path class="arrow-in" d="M600 776 C628 742 628 632 665 600"/>
+
+  <path class="arrow-out" d="M1550 525 H1610"/>
+  <path class="arrow-out" d="M1855 323 H1910"/>
+  <path class="arrow-out" d="M1855 538 H1910"/>
+  <path class="arrow-out" d="M1855 764 H1910"/>
+
+  <path class="arrow-out" d="M1550 465 H1580 V323 H1610"/>
+  <path class="arrow-out" d="M1550 585 H1580 V764 H1610"/>
+
+  <!-- Dependency direction note -->
+  <g transform="translate(840 936)">
+    <rect class="box note" width="520" height="100" rx="10"/>
+    <rect class="stripe-note" width="520" height="10" rx="5"/>
+    <text class="box-title" x="260" y="34" text-anchor="middle">Dependency direction</text>
+    <text class="box-line" x="260" y="58" text-anchor="middle">Ports belong to the application boundary.</text>
+    <text class="box-line" x="260" y="80" text-anchor="middle">Adapters sit outside and call those ports inward.</text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(92 1090)">
+    <rect class="box note" width="455" height="52" rx="12"/>
+    <line class="arrow-in" x1="28" y1="26" x2="108" y2="26"/>
+    <text class="legend-text" x="125" y="31">Inbound calls</text>
+    <line class="arrow-out" x1="260" y1="26" x2="340" y2="26"/>
+    <text class="legend-text" x="358" y="31">Outbound calls</text>
+  </g>
+
+</svg>
