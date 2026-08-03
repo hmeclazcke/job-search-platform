@@ -6,7 +6,6 @@ import com.hmeclazcke.jobsearchplatform.contracts.search.provider.ProviderFailur
 import com.hmeclazcke.jobsearchplatform.linkedin.adapter.out.http.mapper.LinkedinJobMapper;
 import com.hmeclazcke.jobsearchplatform.linkedin.adapter.out.http.parser.LinkedinHtmlParser;
 import com.hmeclazcke.jobsearchplatform.linkedin.application.port.out.provider.ProviderSearchException;
-import com.hmeclazcke.jobsearchplatform.linkedin.application.port.out.provider.SearchJobsPort;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,7 @@ import org.springframework.web.client.RestClientException;
 import java.util.List;
 
 @Component
-public class LinkedinClient implements SearchJobsPort {
+public class LinkedinClient {
 
     private final RestClient restClient;
     private final LinkedinHtmlParser htmlParser;
@@ -34,7 +33,6 @@ public class LinkedinClient implements SearchJobsPort {
         this.jobMapper = jobMapper;
     }
 
-    @Override
     public List<JobDto> searchJobs(SearchCriteria criteria) {
         try {
             String html = restClient

@@ -60,6 +60,7 @@ public class MergeProviderResultsService implements MergeProviderResultsUseCase 
         SearchState updatedState = new SearchState(
                 currentState.searchId(),
                 updatedStatus,
+                updatedJobs.size(),
                 List.copyOf(updatedJobs),
                 Map.copyOf(updatedProviders),
                 currentState.failures(),

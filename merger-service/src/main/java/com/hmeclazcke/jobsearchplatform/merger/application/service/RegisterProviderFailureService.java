@@ -66,6 +66,7 @@ public class RegisterProviderFailureService implements RegisterProviderFailureUs
         SearchState updatedState = new SearchState(
                 currentState.searchId(),
                 updatedStatus,
+                currentState.jobCount(),
                 currentState.jobs(),
                 Map.copyOf(updatedProviders),
                 List.copyOf(updatedFailures),

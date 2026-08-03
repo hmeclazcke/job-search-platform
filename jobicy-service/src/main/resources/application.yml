@@ -18,12 +18,22 @@ spring:
       properties:
         spring.json.add.type.headers: false
 
+  data:
+    redis:
+      url: redis://localhost:6379
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: 30m
+
 server:
   port: 8082
 
 app:
   jobicy:
     base-url: https://jobicy.com
+
   kafka:
     topics:
       search-requested: search.requested.v1

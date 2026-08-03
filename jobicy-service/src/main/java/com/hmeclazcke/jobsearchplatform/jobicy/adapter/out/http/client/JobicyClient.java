@@ -4,7 +4,6 @@ import com.hmeclazcke.jobsearchplatform.contracts.search.model.JobDto;
 import com.hmeclazcke.jobsearchplatform.contracts.search.model.SearchCriteria;
 import com.hmeclazcke.jobsearchplatform.jobicy.adapter.out.http.dto.JobicyResponse;
 import com.hmeclazcke.jobsearchplatform.jobicy.adapter.out.http.mapper.JobicyJobMapper;
-import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.provider.SearchJobsPort;
 import com.hmeclazcke.jobsearchplatform.contracts.search.provider.ProviderFailureType;
 import com.hmeclazcke.jobsearchplatform.jobicy.application.port.out.provider.ProviderSearchException;
 import org.springframework.web.client.HttpClientErrorException;
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
-public class JobicyClient implements SearchJobsPort {
+public class JobicyClient {
 
     private final RestClient restClient;
     private final JobicyJobMapper mapper;
@@ -33,7 +32,6 @@ public class JobicyClient implements SearchJobsPort {
         this.mapper = mapper;
     }
 
-    @Override
     public List<JobDto> searchJobs(SearchCriteria criteria) {
         if (Boolean.FALSE.equals(criteria.remote())) {
             return List.of();

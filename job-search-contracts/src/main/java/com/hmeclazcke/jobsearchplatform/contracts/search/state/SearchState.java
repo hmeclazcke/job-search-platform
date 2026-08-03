@@ -16,6 +16,7 @@ import java.util.Map;
  * {
  *   "searchId": "abc-123",
  *   "status": "COMPLETED_WITH_FAILURES",
+ *   "jobCount": 1,
  *   "jobs": [
  *     {
  *       "title": "Java Developer",
@@ -42,6 +43,7 @@ import java.util.Map;
 public record SearchState(
         String searchId,
         SearchStatus status,
+        int jobCount,
         List<JobDto> jobs,
         Map<JobProvider, ProviderStatus> providers,
         List<ProviderFailure> failures,

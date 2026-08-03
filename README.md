@@ -2,7 +2,7 @@
 
 Microservices job search platform built with Java 21, Spring Boot, Apache Kafka, Redis, MongoDB and Docker Compose.
 
-The system receives a search request, publishes it to Kafka, lets multiple providers process it asynchronously, merges the provider responses, stores the current search state in Redis, and exposes the result through an HTTP API.
+The system receives a search request, publishes it to Kafka, lets multiple providers process it asynchronously, merges the provider responses, stores the current search state in Redis, and exposes the result through an HTTP API. Jobicy and LinkedIn provider calls are cached with Spring Cache backed by Redis.
 
 ![Execution flow](docs/images/execution-flow-sequence-full.svg)
 
@@ -24,7 +24,7 @@ The system receives a search request, publishes it to Kafka, lets multiple provi
 
 ## SearchState Example
 
-`merger-service` stores the current search state in Redis. `search-service` reads that state when the client calls `GET /search/{searchId}`.
+`merger-service` stores the current search state in Redis. `search-service` reads that state when the client calls `GET /search/{searchId}`. `jobCount` is derived from the current `jobs` list.
 
 Example:
 
@@ -32,6 +32,7 @@ Example:
 {
   "searchId": "ab739095-15b7-4c82-9baa-fdcbb1fdaeae",
   "status": "COMPLETED",
+  "jobCount": 3,
   "jobs": [
     {
       "title": "Spring Boot Developer",
@@ -121,6 +122,7 @@ The search flow is asynchronous. A `GET` immediately after `POST` can return 404
 | Build | Maven multi-module |
 | Messaging | Apache Kafka |
 | State read model | Redis |
+| Provider cache | Spring Cache with Redis for Jobicy and LinkedIn |
 | Internal data source | MongoDB |
 | External HTTP source | Jobicy |
 | External HTML source | LinkedIn guest jobs endpoint parsed with JSoup |
@@ -168,6 +170,7 @@ Successful response:
 {
   "searchId": "...",
   "status": "COMPLETED",
+  "jobCount": 0,
   "jobs": [],
   "providers": {
     "JOBICY": "COMPLETED",
@@ -222,6 +225,7 @@ Redis repositories
 MongoDB repositories
 RestClient clients
 JSoup HTML parser
+Spring Cache
 Docker Compose
 application.yml
 ```
@@ -284,14 +288,16 @@ job-search-platform
 | --- | --- | --- |
 | `job-search-contracts` | - | Plain Java library with Kafka events, shared DTOs, provider enums, `SearchState` and `SearchStateKeys`. |
 | `search-service` | 8081 | Exposes `POST /search`, publishes search requests to Kafka and reads Redis state for `GET /search/{searchId}`. |
-| `jobicy-service` | 8082 | Consumes search requests, calls Jobicy HTTP API and publishes provider results or failures. |
+| `jobicy-service` | 8082 | Consumes search requests, calls Jobicy HTTP API, caches provider results with Spring Cache and Redis, and publishes provider results or failures. |
 | `internal-jobs-service` | 8084 | Consumes search requests, reads active jobs from MongoDB collection `internal_jobs` and publishes provider results or failures. |
-| `linkedin-service` | 8087 | Consumes search requests, calls LinkedIn guest jobs endpoint, parses HTML with JSoup and publishes provider results or failures. |
+| `linkedin-service` | 8087 | Consumes search requests, calls LinkedIn guest jobs endpoint, parses HTML with JSoup, caches provider results with Spring Cache and Redis, and publishes provider results or failures. |
 | `merger-service` | 8083 | Consumes provider results/failures, calculates `SearchStatus` and stores `SearchState` in Redis. |
 
 ## Docker Services
 
 Docker Compose includes infrastructure and all Java microservices.
+
+Redis is used both as the `SearchState` read model and as the Spring Cache backend for Jobicy and LinkedIn provider results.
 
 Infrastructure:
 

@@ -42,6 +42,7 @@ public class SearchStateProvider {
         // {
         //   "searchId": "abc-123",
         //   "status": "PENDING",
+        //   "jobCount": 0,
         //   "jobs": [],
         //   "providers": {
         //     "JOBICY": "PENDING",
@@ -53,6 +54,7 @@ public class SearchStateProvider {
         return new SearchState(
                 searchId,
                 SearchStatus.PENDING,
+                0,
                 List.of(),
                 expectedProviders.stream()
                         .collect(Collectors.toMap(
