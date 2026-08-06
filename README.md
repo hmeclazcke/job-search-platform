@@ -12,6 +12,7 @@ The system receives a search request, publishes it to Kafka, lets multiple provi
 - [Quick Start](#quick-start)
 - [Tech Stack](#tech-stack)
 - [API](#api)
+- [OpenAPI / Swagger UI](#openapi--swagger-ui)
 - [Architecture](#architecture)
 - [Resilience](#resilience)
 - [Kafka](#kafka)
@@ -122,6 +123,7 @@ The search flow is asynchronous. A `GET` immediately after `POST` can return 404
 | Runtime | Java 21 |
 | Framework | Spring Boot 3.5.16 |
 | Build | Maven multi-module |
+| API documentation | springdoc-openapi / Swagger UI |
 | Messaging | Apache Kafka |
 | State read model | Redis |
 | Provider cache | Spring Cache with Redis for Jobicy and LinkedIn |
@@ -203,6 +205,24 @@ HTTP status:
 ```text
 404 Not Found
 ```
+
+## OpenAPI / Swagger UI
+
+`search-service` exposes OpenAPI documentation for the public HTTP API.
+
+Swagger UI:
+
+```text
+http://localhost:8081/swagger-ui.html
+```
+
+OpenAPI JSON:
+
+```text
+http://localhost:8081/v3/api-docs
+```
+
+The generated documentation includes `POST /search`, `GET /search/{searchId}`, request/response schemas and example responses.
 
 ## Architecture
 
