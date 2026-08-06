@@ -2,7 +2,7 @@
 
 Microservices job search platform built with Java 21, Spring Boot, Apache Kafka, Redis, MongoDB and Docker Compose.
 
-The system receives a search request, publishes it to Kafka, lets multiple providers process it asynchronously, merges the provider responses, stores the current search state in Redis, and exposes the result through an HTTP API. Jobicy and LinkedIn provider calls are cached with Spring Cache backed by Redis.
+The system receives a search request, publishes it to Kafka, lets multiple providers process it asynchronously, merges the provider responses, stores the current search state in Redis, and exposes the result through an HTTP API. Jobicy and LinkedIn provider calls are protected with Resilience4j circuit breakers and cached with Spring Cache backed by Redis.
 
 ![Execution flow](docs/images/execution-flow-sequence-full.svg)
 
@@ -13,11 +13,13 @@ The system receives a search request, publishes it to Kafka, lets multiple provi
 - [Tech Stack](#tech-stack)
 - [API](#api)
 - [Architecture](#architecture)
+- [Resilience](#resilience)
 - [Kafka](#kafka)
 - [Modules](#modules)
 - [Docker Services](#docker-services)
 - [Localhost vs Docker Service Names](#localhost-vs-docker-service-names)
 - [Local Debugging](#local-debugging)
+- [Spring Profiles](#spring-profiles)
 - [Running Services With Maven](#running-services-with-maven)
 - [Health Checks](#health-checks)
 - [Validated Flows](#validated-flows)
@@ -123,6 +125,7 @@ The search flow is asynchronous. A `GET` immediately after `POST` can return 404
 | Messaging | Apache Kafka |
 | State read model | Redis |
 | Provider cache | Spring Cache with Redis for Jobicy and LinkedIn |
+| Resilience | Resilience4j circuit breakers for Jobicy and LinkedIn |
 | Internal data source | MongoDB |
 | External HTTP source | Jobicy |
 | External HTML source | LinkedIn guest jobs endpoint parsed with JSoup |
@@ -232,6 +235,24 @@ application.yml
 
 Shared data that crosses service boundaries lives in `job-search-contracts`.
 
+## Resilience
+
+External providers are isolated behind circuit breakers.
+
+`jobicy-service` and `linkedin-service` use Resilience4j to prevent repeated slow or failing calls from blocking Kafka consumers. When an external API becomes unhealthy, the circuit breaker opens and subsequent calls fail fast.
+
+Those failures are not propagated as unhandled listener errors. They are translated into `ProviderFailedEvent` messages, so the asynchronous flow remains controlled and `merger-service` can update the Redis `SearchState`.
+
+Current local-friendly thresholds:
+
+```text
+sliding-window-size: 5                          # Evaluates the last 5 calls.
+minimum-number-of-calls: 5                      # Waits for at least 5 calls before calculating the failure rate.
+failure-rate-threshold: 50                      # Opens the circuit when 50% or more of the evaluated calls fail.
+wait-duration-in-open-state: 10s                # Keeps the circuit open for 10 seconds before trying again.
+permitted-number-of-calls-in-half-open-state: 2 # Allows 2 trial calls while checking if the provider recovered.
+```
+
 ## Kafka
 
 Topics:
@@ -288,9 +309,9 @@ job-search-platform
 | --- | --- | --- |
 | `job-search-contracts` | - | Plain Java library with Kafka events, shared DTOs, provider enums, `SearchState` and `SearchStateKeys`. |
 | `search-service` | 8081 | Exposes `POST /search`, publishes search requests to Kafka and reads Redis state for `GET /search/{searchId}`. |
-| `jobicy-service` | 8082 | Consumes search requests, calls Jobicy HTTP API, caches provider results with Spring Cache and Redis, and publishes provider results or failures. |
+| `jobicy-service` | 8082 | Consumes search requests, calls Jobicy HTTP API with a circuit breaker, caches provider results with Spring Cache and Redis, and publishes provider results or failures. |
 | `internal-jobs-service` | 8084 | Consumes search requests, reads active jobs from MongoDB collection `internal_jobs` and publishes provider results or failures. |
-| `linkedin-service` | 8087 | Consumes search requests, calls LinkedIn guest jobs endpoint, parses HTML with JSoup, caches provider results with Spring Cache and Redis, and publishes provider results or failures. |
+| `linkedin-service` | 8087 | Consumes search requests, calls LinkedIn guest jobs endpoint with a circuit breaker, parses HTML with JSoup, caches provider results with Spring Cache and Redis, and publishes provider results or failures. |
 | `merger-service` | 8083 | Consumes provider results/failures, calculates `SearchStatus` and stores `SearchState` in Redis. |
 
 ## Docker Services
@@ -389,6 +410,24 @@ If all services are already running in Docker and you want to debug locally, sto
 
 ```powershell
 docker compose stop search-service jobicy-service merger-service internal-jobs-service linkedin-service
+```
+
+## Spring Profiles
+
+`jobicy-service` includes a local Spring Profile named `local-http-logging`.
+
+When this profile is active, `LocalHttpLoggingConfig` registers a `RestClientCustomizer` that logs outgoing Jobicy HTTP requests before they are executed. This is meant for local debugging and is not enabled by Docker Compose.
+
+Run `jobicy-service` with local HTTP logging:
+
+```powershell
+.\mvnw.cmd -f .\jobicy-service\pom.xml spring-boot:run "-Dspring-boot.run.arguments=--spring.profiles.active=local-http-logging"
+```
+
+Run it normally, without the profile:
+
+```powershell
+.\mvnw.cmd -f .\jobicy-service\pom.xml spring-boot:run
 ```
 
 ## Running Services With Maven
