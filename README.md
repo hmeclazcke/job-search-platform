@@ -27,7 +27,7 @@ The system receives a search request, publishes it to Kafka, lets multiple provi
 
 ## SearchState Example
 
-`merger-service` stores the current search state in Redis. `search-service` reads that state when the client calls `GET /search/{searchId}`. `jobCount` is derived from the current `jobs` list.
+`merger-service` stores the current search state in Redis. `search-service` reads that state when the client calls `GET /search/{searchId}`. `updatedAt` shows when the Redis state was last written by `merger-service`. `jobCount` is derived from the current `jobs` list.
 
 Example:
 
@@ -35,6 +35,7 @@ Example:
 {
   "searchId": "ab739095-15b7-4c82-9baa-fdcbb1fdaeae",
   "status": "COMPLETED",
+  "updatedAt": "2026-08-07T10:14:05.959677873Z",
   "jobCount": 3,
   "jobs": [
     {
@@ -175,6 +176,7 @@ Successful response:
 {
   "searchId": "...",
   "status": "COMPLETED",
+  "updatedAt": "2026-08-07T10:14:05.959677873Z",
   "jobCount": 0,
   "jobs": [],
   "providers": {
@@ -332,7 +334,7 @@ job-search-platform
 | `jobicy-service` | 8082 | Consumes search requests, calls Jobicy HTTP API with a circuit breaker, caches provider results with Spring Cache and Redis, and publishes provider results or failures. |
 | `internal-jobs-service` | 8084 | Consumes search requests, reads active jobs from MongoDB collection `internal_jobs` and publishes provider results or failures. |
 | `linkedin-service` | 8087 | Consumes search requests, calls LinkedIn guest jobs endpoint with a circuit breaker, parses HTML with JSoup, caches provider results with Spring Cache and Redis, and publishes provider results or failures. |
-| `merger-service` | 8083 | Consumes provider results/failures, calculates `SearchStatus` and stores `SearchState` in Redis. |
+| `merger-service` | 8083 | Consumes provider results/failures, calculates `SearchStatus`, updates `updatedAt` and stores `SearchState` in Redis. |
 
 ## Docker Services
 

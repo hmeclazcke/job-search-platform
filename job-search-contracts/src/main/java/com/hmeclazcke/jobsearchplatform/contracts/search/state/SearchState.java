@@ -3,6 +3,7 @@ package com.hmeclazcke.jobsearchplatform.contracts.search.state;
 import com.hmeclazcke.jobsearchplatform.contracts.search.provider.JobProvider;
 import com.hmeclazcke.jobsearchplatform.contracts.search.model.JobDto;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import java.util.Map;
  * {
  *   "searchId": "abc-123",
  *   "status": "COMPLETED_WITH_FAILURES",
+ *   "updatedAt": "2026-08-07T10:14:05.959677873Z",
  *   "jobCount": 1,
  *   "jobs": [
  *     {
@@ -43,6 +45,7 @@ import java.util.Map;
 public record SearchState(
         String searchId,
         SearchStatus status,
+        Instant updatedAt,
         int jobCount,
         List<JobDto> jobs,
         Map<JobProvider, ProviderStatus> providers,

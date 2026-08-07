@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +67,7 @@ public class RegisterProviderFailureService implements RegisterProviderFailureUs
         SearchState updatedState = new SearchState(
                 currentState.searchId(),
                 updatedStatus,
+                Instant.now(),
                 currentState.jobCount(),
                 currentState.jobs(),
                 Map.copyOf(updatedProviders),

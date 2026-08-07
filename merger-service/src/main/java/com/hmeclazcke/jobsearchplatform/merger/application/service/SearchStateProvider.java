@@ -8,6 +8,7 @@ import com.hmeclazcke.jobsearchplatform.merger.application.port.out.config.LoadE
 import com.hmeclazcke.jobsearchplatform.merger.application.port.out.repository.LoadSearchStatePort;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +43,7 @@ public class SearchStateProvider {
         // {
         //   "searchId": "abc-123",
         //   "status": "PENDING",
+        //   "updatedAt": "2026-08-07T10:14:05.959677873Z",
         //   "jobCount": 0,
         //   "jobs": [],
         //   "providers": {
@@ -54,6 +56,7 @@ public class SearchStateProvider {
         return new SearchState(
                 searchId,
                 SearchStatus.PENDING,
+                Instant.now(),
                 0,
                 List.of(),
                 expectedProviders.stream()
