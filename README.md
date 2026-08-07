@@ -122,8 +122,9 @@ The search flow is asynchronous. A `GET` immediately after `POST` can return 404
 | Area | Technology |
 | --- | --- |
 | Runtime | Java 21 |
-| Framework | Spring Boot 3.5.16 |
+| Framework | Spring Boot 4.1.0 |
 | Build | Maven multi-module |
+| JSON serialization | Jackson 3 |
 | API documentation | springdoc-openapi / Swagger UI |
 | Messaging | Apache Kafka |
 | State read model | Redis |
@@ -413,7 +414,7 @@ Docker Compose overrides those values with environment variables:
 ```yaml
 SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
 SPRING_DATA_REDIS_URL: redis://redis:6379
-SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/job-search-platform
+SPRING_MONGODB_URI: mongodb://mongodb:27017/job-search-platform
 ```
 
 ## Local Debugging

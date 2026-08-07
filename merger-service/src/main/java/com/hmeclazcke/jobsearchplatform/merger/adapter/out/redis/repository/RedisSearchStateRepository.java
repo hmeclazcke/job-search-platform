@@ -1,7 +1,7 @@
 package com.hmeclazcke.jobsearchplatform.merger.adapter.out.redis.repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import com.hmeclazcke.jobsearchplatform.contracts.search.state.SearchState;
 import com.hmeclazcke.jobsearchplatform.contracts.search.state.SearchStateKeys;
 import com.hmeclazcke.jobsearchplatform.merger.application.port.out.repository.LoadSearchStatePort;
@@ -43,7 +43,7 @@ public class RedisSearchStateRepository implements LoadSearchStatePort, SaveSear
         try {
             // Redis returns JSON, so it is converted back into SearchState.
             return Optional.of(objectMapper.readValue(json, SearchState.class));
-        } catch (JsonProcessingException exception) {
+        } catch (JacksonException exception) {
             throw new IllegalStateException("Could not deserialize search state from Redis", exception);
         }
     }
@@ -55,7 +55,7 @@ public class RedisSearchStateRepository implements LoadSearchStatePort, SaveSear
             String json = objectMapper.writeValueAsString(searchState);
             // Saves the JSON in Redis for this searchId.
             stringRedisTemplate.opsForValue().set(keyFor(searchState.searchId()), json);
-        } catch (JsonProcessingException exception) {
+        } catch (JacksonException exception) {
             throw new IllegalStateException("Could not serialize search state for Redis", exception);
         }
     }

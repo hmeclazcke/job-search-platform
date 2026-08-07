@@ -9,8 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
-
+import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
 import java.util.Map;
 
 /**
@@ -43,7 +42,7 @@ public class KafkaConsumerConfig {
      */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, ProviderResultsEvent> providerResultsKafkaListenerContainerFactory() {
-        JsonDeserializer<ProviderResultsEvent> valueDeserializer = new JsonDeserializer<>(ProviderResultsEvent.class);
+        JacksonJsonDeserializer<ProviderResultsEvent> valueDeserializer = new JacksonJsonDeserializer<>(ProviderResultsEvent.class);
         valueDeserializer.addTrustedPackages("com.hmeclazcke.jobsearchplatform.contracts");
         valueDeserializer.setUseTypeHeaders(false);
 
@@ -70,7 +69,7 @@ public class KafkaConsumerConfig {
      */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, ProviderFailedEvent> providerFailedKafkaListenerContainerFactory() {
-        JsonDeserializer<ProviderFailedEvent> valueDeserializer = new JsonDeserializer<>(ProviderFailedEvent.class);
+        JacksonJsonDeserializer<ProviderFailedEvent> valueDeserializer = new JacksonJsonDeserializer<>(ProviderFailedEvent.class);
         valueDeserializer.addTrustedPackages("com.hmeclazcke.jobsearchplatform.contracts");
         valueDeserializer.setUseTypeHeaders(false);
 
